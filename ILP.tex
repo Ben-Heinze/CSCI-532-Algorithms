@@ -1,0 +1,313 @@
+% Created 2026-04-07 Tue 13:13
+% Intended LaTeX compiler: pdflatex
+\documentclass[11pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{graphicx}
+\usepackage{longtable}
+\usepackage{wrapfig}
+\usepackage{rotating}
+\usepackage[normalem]{ulem}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{capt-of}
+\usepackage{hyperref}
+\usepackage[left=0.75in,right=0.75in,top=1in,bottom=1in]{geometry}
+\usepackage{enumitem}
+\setlist[itemize]{itemsep=2pt, topsep=4pt}
+\author{Ben Heinze}
+\date{\today}
+\title{CSCI 532 - Algorithms}
+\hypersetup{
+ pdfauthor={Ben Heinze},
+ pdftitle={CSCI 532 - Algorithms},
+ pdfkeywords={},
+ pdfsubject={},
+ pdfcreator={Emacs 29.3 (Org mode 9.6.15)}, 
+ pdflang={English}}
+\begin{document}
+
+\maketitle
+
+
+\section{Tutorial for ORG Mode:}
+\label{sec:orgfffe37b}
+
+Let \(A\) be an \(n \times n\) matrix. The determinant satisfies:
+
+\[111
+  \det(AB) = \det(A) \cdot \det(B)
+\]
+
+\subsection{Gaussian Elimination (Pseudo-code)}
+\label{sec:org3ff0876}
+
+\begin{verbatim}
+INPUT: augmented matrix [A | b]
+FOR each pivot row r:
+  FOR each row below r:
+    factor ← A[i][r] / A[r][r]
+    A[i] ← A[i] - factor * A[r]
+RETURN reduced matrix
+\end{verbatim}
+
+\section{Integer Linear Programming}
+\label{sec:orgd802600}
+
+Vertex cover: given graph \(G = (V,E)\) find the smallest V' \(\subset\) V such that each edge in E contains an end point in V':
+\begin{itemize}
+\item \(x_i \in \{0,1\}\) = indicates if vertex \(i\) is selected.
+\item Objective: min \(\sum_i x_i\)
+\item subject to:
+\begin{itemize}
+\item \(x_i + x_j \leq 1\), for each edge \(e = (i,j)\)
+\end{itemize}
+\end{itemize}
+
+Solving integer linear programs (ILPs) is NP-Hard (in general).
+
+ILP vs LP:
+Since the PL has more options to reduce the objective value, \(OPT_{LP} \leq OPT_{ILP}\) (for a minimization problem). If the minimum objective value comes from an integer solution, a plain LP solver (e.g., Simplex) will find it.
+\textbf{\textbf{Go home and fundamentally understand **\(OPT_{LP} \leq OPT_{ILP}\) **becaues it may be a test question}}
+
+\subsection{Why are ILPs hard to solve?}
+\label{sec:org6d23fb4}
+
+Does the optimal continuous solution --> optimal integer solution?
+
+[insert graph pic here]
+
+The continuous optimal objective function is 41.25. How can we translate that to an ILP solution?
+\begin{itemize}
+\item Closest integer solution?
+\begin{itemize}
+\item not feasible
+\end{itemize}
+\item Closest feasible integer solution?
+\begin{itemize}
+\item objective function = 34, but not optimal
+\end{itemize}
+\item Closest feasible integer solutionnn on feasible region boundary?
+\begin{itemize}
+\item objective function = 39 = not optimal
+\end{itemize}
+\item Actual optimal:
+\begin{itemize}
+\item objective function = 40
+\end{itemize}
+\end{itemize}
+
+[insert image of other shrinkwrap graph]
+
+Integer feasible region:
+\begin{itemize}
+\item not convex
+\item local optimum \(\neq\) global optimum
+\end{itemize}
+
+
+Minimum convex hull (integer hull):
+\begin{itemize}
+\item convex
+\item local optimum = global optimum
+\item \(O(n^{\lfloor \frac{d}{2} \rfloor})\) faces,
+\begin{itemize}
+\item n = number of points
+\item d = number of dimensions
+\end{itemize}
+\end{itemize}
+
+\subsection{Solving ILPs}
+\label{sec:org98270d2}
+
+Supposed we have an ILP that is a maximization problem.
+
+\begin{enumerate}
+\item Relax ILP (turn integers into real values) \(x \in \mathbb{Z} \rightarrow x \in \mathbb{R}\)
+
+\item Solve relaxed LP. Suppose the optimal objective is 100 with a fractional solution (ig some \(x_i = 3.24\))
+Since the relaxed LP has more optinons to increase the objective value, \(OPT_{LP} \leq OPT_{ILP}\)
+
+\item Formulate two neew LPs. One with \(x_i \geq 4\) and the other one with \(x_i \leq 3\) constraints. New you have two LP subproblems that you can solve easily.
+
+\item Solve subproblem LPs
+
+\item Formulate two new LPs that split the subproblem on some non-integer variable
+
+\item Solve the subproblem LPs.
+
+\item Repeat.
+\end{enumerate}
+
+\subsubsection{case 1: both subproblems are integers}
+\label{sec:org49fd19d}
+
+Main problem (LP relaxation): \(x \in \mathbb{R}, obj = 100\)
+
+Subproblem 1 result: \(x \in \mathbb{Z}, obj = 85\)
+
+Subproblem 2 result: \(x \in \mathbb{Z}, obj = 90\)
+
+If both subproblems are integers (\(\in \mathbb{Z}\)), just select the highest one (subproblem 2 in this case).
+
+\subsubsection{case 2: a subproblem is in the real number set}
+\label{sec:org751e034}
+
+subproblem 1: result = \(x \in \mathbb{R}, obj = 98\)
+
+subproblem 2: result  =\(x \in \mathbb{Z}, obj = 90\)
+
+Subproblem 1 isn't guaranteed to be an integer, but now we have two bounds. Worst case, it is 90. Best case, it is 98.
+
+So far, we have:
+\begin{enumerate}
+\item feasible (integer) solution (subproblem 2)
+\item Upper and lower bounds on optimal (90, 98).
+\end{enumerate}
+
+Branch and bound plan: use these to restrict the search space and identify optimality.
+
+\textbf{\textbf{Add two sub-subproblems on subprolbem 1:}}
+
+Subproblem 1.1: result = \(x \in \mathbb{R}, obj = 88\)
+
+Subproblem 1.2: result = \(x \in \mathbb{R}, obj = 97\)
+
+Subproblem 1.1 is dead, beacuse the objective function is already lower than our first integer subproblem 2, where the integer objective was 90. No need to check worse solutions.
+
+If subproblem 1.2 had an objective solution of 85, we terminate both subproblems since we know that subproblem 2's obj = 90 solution is optimal.
+
+\subsubsection{Is this process guaranteed to eventually find the optimal integer solution?}
+\label{sec:org3baa17c}
+
+Yes, this is essentially brute-force with heuristics. Given enough constraints like \(x_i \leq 3\), all variables will be bounded to their optimal intger values. Other techniques (cutting planes, intelligently picking which \(x_i\) to split on) can help speed up the process.
+
+
+\subsection{Can we optimally solve this?}
+\label{sec:orgc198050}
+
+Variables: \(x_1, x_2 \in \mathbb{Z}\)
+
+Objective: \(min - \frac{\pi}{\sqrt{2}}x_1 + \frac{\log{2}}{e}x_2 + \frac{32}{17}\)
+
+Subject to: \(x_1 \leq 1 ; x_2  \leq 1 ; x_1, x_2 \geq 0\)
+
+
+\textbf{\textbf{Can we solve this optimally?}}
+
+yes..
+
+
+\section{Vertex Cover}
+\label{sec:org47246bb}
+
+
+Total Unimodularity: A matrix is \textbf{\textbf{totally unimodular}} if the determinant of any square submatrix of it is 0, 1, or -1.
+
+\begin{itemize}
+\item This impies that totally unimodular matrices are composed of 0s 1s or -1s, since single elements are square submatrices.
+\item This also means that if \(A\) is totally unimodular, \(A^T\) is too since \(det(B) = det(B^T)\)
+\end{itemize}
+
+
+\textbf{\textbf{Theorem (Hoffman-Krusal, 1956):}}
+\begin{itemize}
+\item \(A \in \mathbb{R}^{m \times n} \text{is totally unimodular} \iff \text{the feasible region:} \{x \in \mathbb{R}^n \mid Ax \leq b, x \geq 0 \} \text{has integer vertices } \forall b \in \mathbb{Z}^m\).
+
+\begin{itemize}
+\item If we can prove that our coefficient constraint matrix is unimodular, we can solve it in polynomial time.
+\end{itemize}
+\end{itemize}
+
+Objective: \(max(c^T x)\)
+Subject to: \(A x \leq b ; x \geq 0\)
+
+If A is totally unimodular, the ILP can be solved in polynomial time! However, there is no quick and easy way to determine if a matrix is unimodular until Ghoula-Houri's theorem came out:
+
+\textbf{\textbf{Theorem (Ghoula-Houri, 1962):}}
+
+\begin{itemize}
+\item \(A \in \mathbb{R}^{m \times n}\) is unimodular \(\iff\) for every subset of rows R, there is a partition \(R = R_1 \bigcup R_2\) such that for every column \(j\), \(\sum_{i \in R_1} A_{ij} - \sum_{i \in R_2} A_{ij} \in \{-1, 0, 1\}\)
+\end{itemize}
+
+
+These two theorems are linked together by the unimodularity. We can show if a problem has the Ghoula-houri property, then it has an integer solution
+---
+
+\section{Vertex cover:}
+\label{sec:org8b3ddba}
+
+Vertex cover ILP:
+\begin{itemize}
+\item \(x_i \in \{ 0,1\}\) = indicates if vertex \(i\) is selected
+\item Objective: \(max(c^T x)\)
+\item Subject to: \(A x \leq b ; x \geq 0\)
+\end{itemize}
+
+Goula-Houri Theorem:
+\begin{itemize}
+\item Objective: \(min \sum_i x_i\)
+\item subject to: \(x_i + x_j \geq 1, \text{for each edge } e = (i,j)\)
+\end{itemize}
+
+We can create a matrix \(A\) from the vertex cover graph such. Now that we have a matrix, we need to transpose \(A \rightarrow A^T\) in order to use the Ghoula-Houri theorem.
+
+We can use an Label alternating generations of vertices into two sets \(B\) and \(G\) that would guarantee that every edge has two different colored endpoints
+
+To turn our problem to work with the GoulaHouri theorem, we must change \(\leq\) to \(\geq\) in the contraints. Look this up in the lecture for details 
+
+Vertex cover ILP:
+\begin{itemize}
+\item \(x_i \in \{ 0,1\}\) = indicates if vertex \(i\) is selected
+\item Objective: \(max(c^T x)\)
+\item Subject to: \(A x \geq b ; x \geq 0\)
+\end{itemize}
+
+Assume we have a matrix A that has edges on the rows, and vertices on the columns.
+This has a guaranteed row structure, but we need guaranteed column structure (since edges are necessary for a vertex to exist), which is why we transform \(A \rightarrow A^T\).
+Now we have vertices on the rows and edges on the columns instead.So we can use Ghouila-Houris theorem:
+
+\[
+A \in \mathbb{R}^{m \times n} \text{ is unimodular } \iff \text{ for every subset of rows R, there is a partition } R = R_1 \bigcup R_2$ \text{ such that for every column } j, \sum_{i \in R_1} A_{ij} - \sum_{i \in R_2} A_{ij} \in \{-1, 0, 1\}
+\]
+
+We will come up with a partition that works for every single tree. How can we partition the tree such that we only get two unique subsets such that vertices that share an edge are in different subsets
+
+Label alternating generations of vertices into two sets \(B\) and \(G\). Each level of the tree is either \(B\) or \(G\), which guarantees that no edges vertices sharing an edge are always in different sets. If that weren't true, then an edge would have to span generations (creates a cycle, which doesnt exist in this tree). Consider a subset of rows of \(A^T\). Partition \(R\) into \(R_1 = R \cap B \text{ and } R \cap G\)
+
+For any column of \(A^T\), which corresponds to an edge \(e\)
+
+\[ \sum_{v \in R_1} A_{ve} \in \{0,1\} \text{ and } \sum_{v \in R_r} A \in \{0,1\} \rightarrow \sum_{v \in R_1} A_{ve} - \sum_{v \in R_2} A_{ve} \in \{-1, 0, 1\} \]
+
+Therefore Vertex Cover ILP will be solved in polynomial time when the graph is a tree. This solution will work on any bipartite graph.
+
+\section{Vertex Cover (General Graph)}
+\label{sec:orge37c6e0}
+
+\textbf{\textbf{Goal: Show why this specific graph does not have the Ghouila-Houri property.}} 
+
+Where is the contradition with Ghouila-Houri?
+
+\(x_1\) and \(x_2\) have to be on different sides of the partition. There are only two possible partitions:
+
+
+\begin{itemize}
+\item \(R_1 = \{ x_1, x_4\}, R_2 = \{ x_x\}\), which column \(e_2\) sums to 2; not totally unimodular
+\item \(R_1 = \{ x_1\},  R_2 = \{ x_2, x_4\}\), which column \(e_4\) sums to -2; not totally unimodular
+\end{itemize}
+
+No such partition exists, so \(A^T\) and \(A\) are not totally unimodualar. \textbf{\textbf{Total unimodularity is not the only route to an integer-vertexed feasible region.}}
+
+
+\subsection{Non-totally unimodular ILP that can have integer feasible region.}
+\label{sec:orgc278a07}
+
+To prove that total unimodularity is not the only route to an integer-vertexed feasible region, he showed an example of an ILP, showed the matrix A is not totally unimodular, then plotted the feasible regions of the ILP that proved the answer was integer.
+
+\subsection{Circuit Value Problem: When the gates are evaluated, is the output true?}
+\label{sec:orga6f46c6}
+
+If we turned a circuit diagram into an ILP by turning each node into a decision variables that has 1 and 0 as values, we can figure out the solution.
+Once we relax this problem, the answer is guaranteed to be integer since the inputs are all integers, and the contstraints keep them integers.
+\textbf{\textbf{This problem does not work well with Total Unimodularity.}} He proves this in the slides by converting the graph to a matrix and showed the determinant is -2, which does not fall into the definition of being \{-1, 0, 1\}. But the solution is solvable by other solutions.
+\end{document}

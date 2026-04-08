@@ -1,0 +1,12 @@
+** Problem 1.
+
+The maximum-weight matching problem on a bipartite graph is as follows:
+Given a bipartite graph with edge weights, select the subset of edges with the largest total
+weight such that no edges share a node. Formulate this problem as an ILP.
+
+
+
+** Problem 2.
+
+If you remove the integer restriction on variables in the ILP from the previous
+problem, will the resulting LP still find valid optimal solutions to the maximum-weight
