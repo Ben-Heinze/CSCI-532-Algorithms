@@ -1,4 +1,4 @@
-% Created 2026-04-07 Tue 13:13
+% Created 2026-04-09 Thu 11:14
 % Intended LaTeX compiler: pdflatex
 \documentclass[11pt]{article}
 \usepackage[utf8]{inputenc}
@@ -31,7 +31,7 @@
 
 
 \section{Tutorial for ORG Mode:}
-\label{sec:orgfffe37b}
+\label{sec:org87e9fc3}
 
 Let \(A\) be an \(n \times n\) matrix. The determinant satisfies:
 
@@ -40,7 +40,7 @@ Let \(A\) be an \(n \times n\) matrix. The determinant satisfies:
 \]
 
 \subsection{Gaussian Elimination (Pseudo-code)}
-\label{sec:org3ff0876}
+\label{sec:orgd296822}
 
 \begin{verbatim}
 INPUT: augmented matrix [A | b]
@@ -52,7 +52,7 @@ RETURN reduced matrix
 \end{verbatim}
 
 \section{Integer Linear Programming}
-\label{sec:orgd802600}
+\label{sec:orgdf4ebaa}
 
 Vertex cover: given graph \(G = (V,E)\) find the smallest V' \(\subset\) V such that each edge in E contains an end point in V':
 \begin{itemize}
@@ -71,7 +71,7 @@ Since the PL has more options to reduce the objective value, \(OPT_{LP} \leq OPT
 \textbf{\textbf{Go home and fundamentally understand **\(OPT_{LP} \leq OPT_{ILP}\) **becaues it may be a test question}}
 
 \subsection{Why are ILPs hard to solve?}
-\label{sec:org6d23fb4}
+\label{sec:orgd35b919}
 
 Does the optimal continuous solution --> optimal integer solution?
 
@@ -118,7 +118,7 @@ Minimum convex hull (integer hull):
 \end{itemize}
 
 \subsection{Solving ILPs}
-\label{sec:org98270d2}
+\label{sec:orga2be5e2}
 
 Supposed we have an ILP that is a maximization problem.
 
@@ -140,7 +140,7 @@ Since the relaxed LP has more optinons to increase the objective value, \(OPT_{L
 \end{enumerate}
 
 \subsubsection{case 1: both subproblems are integers}
-\label{sec:org49fd19d}
+\label{sec:org68d9625}
 
 Main problem (LP relaxation): \(x \in \mathbb{R}, obj = 100\)
 
@@ -151,7 +151,7 @@ Subproblem 2 result: \(x \in \mathbb{Z}, obj = 90\)
 If both subproblems are integers (\(\in \mathbb{Z}\)), just select the highest one (subproblem 2 in this case).
 
 \subsubsection{case 2: a subproblem is in the real number set}
-\label{sec:org751e034}
+\label{sec:org04879bf}
 
 subproblem 1: result = \(x \in \mathbb{R}, obj = 98\)
 
@@ -178,13 +178,13 @@ Subproblem 1.1 is dead, beacuse the objective function is already lower than our
 If subproblem 1.2 had an objective solution of 85, we terminate both subproblems since we know that subproblem 2's obj = 90 solution is optimal.
 
 \subsubsection{Is this process guaranteed to eventually find the optimal integer solution?}
-\label{sec:org3baa17c}
+\label{sec:org39add36}
 
 Yes, this is essentially brute-force with heuristics. Given enough constraints like \(x_i \leq 3\), all variables will be bounded to their optimal intger values. Other techniques (cutting planes, intelligently picking which \(x_i\) to split on) can help speed up the process.
 
 
 \subsection{Can we optimally solve this?}
-\label{sec:orgc198050}
+\label{sec:org196c724}
 
 Variables: \(x_1, x_2 \in \mathbb{Z}\)
 
@@ -199,7 +199,7 @@ yes..
 
 
 \section{Vertex Cover}
-\label{sec:org47246bb}
+\label{sec:org2f9b326}
 
 
 Total Unimodularity: A matrix is \textbf{\textbf{totally unimodular}} if the determinant of any square submatrix of it is 0, 1, or -1.
@@ -235,7 +235,7 @@ These two theorems are linked together by the unimodularity. We can show if a pr
 ---
 
 \section{Vertex cover:}
-\label{sec:org8b3ddba}
+\label{sec:org49681d7}
 
 Vertex cover ILP:
 \begin{itemize}
@@ -282,7 +282,7 @@ For any column of \(A^T\), which corresponds to an edge \(e\)
 Therefore Vertex Cover ILP will be solved in polynomial time when the graph is a tree. This solution will work on any bipartite graph.
 
 \section{Vertex Cover (General Graph)}
-\label{sec:orge37c6e0}
+\label{sec:orgc19c734}
 
 \textbf{\textbf{Goal: Show why this specific graph does not have the Ghouila-Houri property.}} 
 
@@ -300,12 +300,12 @@ No such partition exists, so \(A^T\) and \(A\) are not totally unimodualar. \tex
 
 
 \subsection{Non-totally unimodular ILP that can have integer feasible region.}
-\label{sec:orgc278a07}
+\label{sec:orga886c66}
 
 To prove that total unimodularity is not the only route to an integer-vertexed feasible region, he showed an example of an ILP, showed the matrix A is not totally unimodular, then plotted the feasible regions of the ILP that proved the answer was integer.
 
 \subsection{Circuit Value Problem: When the gates are evaluated, is the output true?}
-\label{sec:orga6f46c6}
+\label{sec:orga9bfa54}
 
 If we turned a circuit diagram into an ILP by turning each node into a decision variables that has 1 and 0 as values, we can figure out the solution.
 Once we relax this problem, the answer is guaranteed to be integer since the inputs are all integers, and the contstraints keep them integers.

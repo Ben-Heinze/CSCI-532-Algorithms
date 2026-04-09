@@ -1,12 +1,43 @@
+#+Title: CSCI 532 - Algorithms Homework 3
+#+Author: Ben Heinze
+#+STARTUP: noindent
+# This is used to shrink the pdf page margins
+#+LATEX_HEADER: \usepackage[left=0.75in,right=0.75in,top=1in,bottom=1in]{geometry}
+
+# This is used to shrink the spacing between bullet points
+#+LATEX_HEADER: \usepackage{enumitem}
+#+LATEX_HEADER: \setlist[itemize]{itemsep=2pt, topsep=4pt}
+
+
+
 ** Problem 1.
+
 
 The maximum-weight matching problem on a bipartite graph is as follows:
 Given a bipartite graph with edge weights, select the subset of edges with the largest total
 weight such that no edges share a node. Formulate this problem as an ILP.
 
 
+** Solution 1
+
+$x_i \in \{0,1\} =$ indicates if vertex $i$ is selected
+
+Objecive:
+max()
+
+
+Constraints:
+-
+-
+- 
+
+
 
 ** Problem 2.
 
 If you remove the integer restriction on variables in the ILP from the previous
-problem, will the resulting LP still find valid optimal solutions to the maximum-weight
+problem, will the resulting LP still find valid optimal solutions to the maximum-weight matching problem on bipartite graphs? Why or why not?
+
+
+
+
