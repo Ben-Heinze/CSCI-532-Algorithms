@@ -1,0 +1,51 @@
+#+Title: CSCI 532 Algorithms - Final Project
+#+Author: Ben Heinze
+
+
+# If you want to remove indent on every paragraph: #+STARTUP: noindent
+
+# This is used to shrink the pdf page margins
+#+LATEX_HEADER: \usepackage[left=0.75in,right=0.75in,top=1in,bottom=1in]{geometry}
+# If you want double spacing: #+LATEX_HEADER: \usepackage{setspace}\n\doublespacing
+
+# This is used to shrink the spacing between bullet points
+#+LATEX_HEADER: \usepackage{enumitem}
+#+LATEX_HEADER: \setlist[itemize]{itemsep=2pt, topsep=4pt}
+
+* Project Requirements
+
+Research project: Find an algorithmic problam that interests you and attempt to do work that has not been done before. This could be implementation/experimentation study or theoretical in nature (e.g., try to prove some result or design a new algorithm for a problem) or a combination of both. The goal of this is to do some novel research. The expectation is not that you end up with something publishable, so don't stress it too much, but that is the motivation. Feel free to take a risk on something. You must write a paper (due May 7 12:00pm) and a presentation to the class during the finals time slots (May 7 at 12:00pm). You will be graded based on the quality of research, quality of report writing, and quality of presentation. 
+
+# ----------------- Abstract -----------------------------------
+
+\begin{abstract}
+hhello this is the abstract blah blah blahhello this is the abstract blah blah blahhello this is the abstract blah blah blahhello this is the abstract blah blah blahhello this is the abstract blah blah blahhello this is the abstract blah blah blahhello this is the abstract blah blah blahhello this is the abstract blah blah blahhello this is the abstract blah blah blahhello this is the abstract blah blah blahhello this is the abstract blah blah blahhello this is the abstract blah blah blahhello this is the abstract blah blah blahhello this is the abstract blah blah blahhello this is the abstract blah blah blahhello this is the abstract blah blah blahhello this is the abstract blah blah blahhello this is the abstract blah blah blahello this is the abstract blah blah blah
+\end{abstract}
+
+
+
+# ----------------- Introduction -----------------------------------
+
+* Introduction
+
+
+\begin{itemize}
+  \item introduce flow networks
+
+\item Test21
+\end{itemize}
+
+
+# ----------------- Methodology -----------------------------------
+
+
+
+# ----------------- Results -----------------------------------
+
+
+
+# ----------------- Discussion -----------------------------------
+
+
+
+# ----------------- Conclusion -----------------------------------

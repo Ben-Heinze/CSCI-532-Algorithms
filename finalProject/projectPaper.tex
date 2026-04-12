@@ -1,0 +1,80 @@
+% Created 2026-04-11 Sat 23:37
+% Intended LaTeX compiler: pdflatex
+\documentclass[11pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{graphicx}
+\usepackage{longtable}
+\usepackage{wrapfig}
+\usepackage{rotating}
+\usepackage[normalem]{ulem}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{capt-of}
+\usepackage{hyperref}
+\usepackage[left=0.75in,right=0.75in,top=1in,bottom=1in]{geometry}
+\usepackage{enumitem}
+\setlist[itemize]{itemsep=2pt, topsep=4pt}
+\author{Ben Heinze}
+\date{May 7, 2026}
+\title{Evaluating Flow Networks and Linear Programming for Modern Optimization Problems}
+\hypersetup{
+ pdfauthor={Ben Heinze},
+ pdftitle={Evaluating Flow Networks and Linear Programming for Modern Optimization Problems},
+ pdfkeywords={},
+ pdfsubject={},
+ pdfcreator={Emacs 29.3 (Org mode 9.6.15)}, 
+ pdflang={English}}
+\begin{document}
+
+\maketitle
+\begin{abstract}
+
+Research project: Find an algorithmic problam that interests you and attempt to do work that has not been done before. This could be implementation/experimentation study or theoretical in nature (e.g., try to prove some result or design a new algorithm for a problem) or a combination of both. The goal of this is to do some novel research. The expectation is not that you end up with something publishable, so don't stress it too much, but that is the motivation. Feel free to take a risk on something. You must write a paper (due May 7 12:00pm) and a presentation to the class during the finals time slots (May 7 at 12:00pm). You will be graded based on the quality of research, quality of report writing, and quality of presentation. 
+
+\end{abstract}
+
+\section{Introduction}
+\label{sec:orgf406170}
+
+
+\begin{itemize}
+	\item Introduce how optimzation is used everywhere, its important, and how we need it to be fast. There are many ways to optimize, and some optimzations must be guaranteed to be optimal. We will introduce two methods of optimzation to compare and contrast the two. maybe talk about which one was introduced first, which one is used. 
+	\item introduce flow networks, and a brief sentence on how they work. (ford-fulkerson)
+	\item Introduce linear programming and how they work. (CPlex)
+	\item Both of these techniques are able to optimally solve th same types of problems (LPs can solve everything a flow network can).
+	\item RQ: The goal: We want to compare how well both algorithms perform against graphs of increasing sizes.
+	\item format of paper: First we will discuss how flow networks work, then we will discuss LPs. Next, we will disscuss the methods of generating the graph and which metrics we will use to measure performance. Once we have a set of graphs with varying number of nodes, we will make a plot where x = size of nodes, y = time in milliseconds. Finally, we will have a discussion about the results and research if there is a fair reason to choose ford fulkerson over cplex. 
+\end{itemize}
+\section{Background}
+\label{sec:org1c9d5dd}
+
+Discuss optimzation, blah blah blah, 
+
+\subsection{Flow Networks}
+\label{sec:org55a8b53}
+
+Here we talk about flow networks and ford fulkerson (FF), maybe other algorithms too?
+
+\subsection{Linear Programming}
+\label{sec:org6f85401}
+
+Here we talk about linear programming and CPLEX. 
+
+\section{Methodology}
+\label{sec:org45a78a0}
+
+We will be comparing FF and CPLEX by generating graphs. Talk about the code I used to generate the graphs (libraries and language used, generating \emph{x} number of graphs with \emph{n} sizes, range of nodes n=100 to n=10000 or something). We will measure in milliseconds.
+
+\subsection{Implementing Ford-Fulkerson}
+\label{sec:org9516e9e}
+
+This is the technical explanation for implementing FF
+
+\subsection{Implementing CPLEX}
+\label{sec:org9650336}
+\section{Discussion}
+\label{sec:org01a098b}
+
+Discussion of why results were what they were. Did we forget to account for anything? Is there still viable reasons for using both of them instead of the one that performs better? good questions. Could I change my experiments to get different results?
+\end{document}

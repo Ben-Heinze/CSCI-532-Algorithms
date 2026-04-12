@@ -1,0 +1,28 @@
+#+Title: Code
+#+Author: Ben Heinze
+#+DATE: May 7, 2026
+
+#+OPTIONS: toc:nil
+
+# If you want to remove indent on every paragraph: #+STARTUP: noindent
+
+# This is used to shrink the pdf page margins
+#+LATEX_HEADER: \usepackage[left=0.75in,right=0.75in,top=1in,bottom=1in]{geometry}
+# If you want double spacing: #+LATEX_HEADER: \usepackage{setspace}\n\doublespacing
+
+# This is used to shrink the spacing between bullet points
+#+LATEX_HEADER: \usepackage{enumitem}
+#+LATEX_HEADER: \setlist[itemize]{itemsep=2pt, topsep=4pt}
+
+This is the code for my Flow-Network vs Linear-Programming project.
+
+
+#+BEGIN_SRC python :results output
+  print("Hello world2")
+  
+#+END_SRC
+
+#+RESULTS:
+: Hello world2
+
+Are you going to take that code?

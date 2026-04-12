@@ -1,0 +1,108 @@
+#+Title: Approximation Algorithms
+#+Author: Ben Heinze
+#+STARTUP: noindent
+# This is used to shrink the pdf page margins
+#+LATEX_HEADER: \usepackage[left=0.75in,right=0.75in,top=1in,bottom=1in]{geometry}
+
+# This is used to shrink the spacing between bullet points
+#+LATEX_HEADER: \usepackage{enumitem}
+#+LATEX_HEADER: \setlist[itemize]{itemsep=2pt, topsep=4pt}
+
+
+* NP-Complete
+
+ Techniques to hand NP Compelte
+ - Brute force (ie exponential time)
+ - Heuristics
+ - approximation algorithms
+ - Fixed parameter tractable algorithms
+
+* Approximation Algorithms
+
+$ALG \leq \alpha OPT$
+
+- $AGL$: cost (size) of algorithms solution
+-  $\alpha$: approximation ratio
+-  $OPT$: cost (size) of optimal solution
+
+  
+If problem is a maximization problem, $ALG \geq \frac{1}{\alpha} OPT$
+
+** Simple Example:
+Suppose I know my algorithm is a 1.12-approximation algorithm ($\alpha=1.12$). Suppose my algorithm returns a solution of cost=746.125. Then, we know that $756.125 \leq 1.12 OPT$.
+
+$\Longrightarrow \frac{746.125}{1.12} = 666.183 \leq OPT \leq 746.125$
+
+The will give us a guaranteed upper and lower bound of where OPT should be. Then, ask yourself if the known solution is good enough for your purposes.
+
+
+** Vertex Cover
+
+VC: given graph, find smallest subset of vertices such that everye edge in the graph has at least one vertex in the subset. 
+
+#+BEGIN_SRC
+ALG Vertex Cover Pseudo-code:
+
+While uncoverd edge exists
+  select both of its vertices
+#+END_SRC
+
+Consider a set of edges $E' \subset E$, that do not share vertices. Is there a relationship between the minimum vertex cover and $|E'|$?
+
+$|E'| \leq OPT$, where $OPT$ is the size of actual smallest vertex cover. If we slected fewer than one vertex per edge, we would not have a vertex cover because that edge would not be covered. 
+
+Does the size of the algorithm's output relate to a set of edges that do not share verticies? The algorithm finds a specific subset $E'$ since the algorithm is constructed to only pick both of the uncovered edge's vertices. So if we have 10 edges, then the most the algorithm covers is 10*2 (since it selects two vertices for edge edge): $ALG = 2|E'|$.
+
+
+j\[ \Longrightarrow ALG = 2 |E'| \leq 2 OPT \Longrightarrow ALG \leq 2 OPT \$
+
+To write an approximiation algorithm, the goal is to relate the optimal solution to some structure $S$, then relating the algorithm to $S$.
+We cannot find optimal vertex covers in poly time unless $P = NP$, but this algorithm is at worst 2-times optimal.
+Two ways to get a better approximation:
+1. Find a new algorithm that performs better
+2. Analyze the already-existing algorithm and decrease the $ALG \leq OPT$ bounds
+
+
+*** Hierarchies:
+Show the Computibility Hierarchy
+
+Approximability Hierarchy
+- NPO
+  - APX
+    - Vertex Cover
+
+
+** Set Cover
+
+Set Cover: Given a set of elements (universe), and sets containing those elements, find the smallest number of sets so that every element of the universe is included.
+
+$U  = \{1,4,7,8,10\}$
+
+$S  = \left\{ \{1,7,8\}, \{1,4,7\}, \{8,4,7\} \right\}$
+
+
+
+
+#+BEGIN_SRC
+Basic Set Cover Algorithm:
+
+While element of universe is not included
+  select S_i with largest number of excluded elements
+#+END_SRC
+
+*** Solving Set Cover
+
+Suppose the universe contains /n/ elements:
+
+\[ ALG \leq \alpha OPT\]
+
+- $ALG$: # of sets selected by the algortihm to cover all /n/ elements
+- $OPT$: # of sets inn an optimal solution cover all /n/ elements
+
+Game plan: bound max number of sets in $ALG \ldots$ by bounding the max number of iterations of the algorithm... by bounding the size of each set added by the algorithm.
+
+For the first set, we want to select the largest set since it covers the most unique elements (since we dont have any elements yet).
+
+\[ ? \leq  |\text{Biggest Set}| \leq ? \]
+
+We are guaranteed to do at least as good as lower bound, guaranteed we don't do better than upper bound. Think about this. In this case, we want to find the relationship between the lower bound. Once we have this relationship, everything else falls into place
