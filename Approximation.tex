@@ -1,4 +1,4 @@
-% Created 2026-04-09 Thu 13:29
+% Created 2026-04-16 Thu 13:29
 % Intended LaTeX compiler: pdflatex
 \documentclass[11pt]{article}
 \usepackage[utf8]{inputenc}
@@ -33,7 +33,7 @@
 
 
 \section{NP-Complete}
-\label{sec:org30cc7b5}
+\label{sec:orgd7a8e9a}
 
 Techniques to hand NP Compelte
 \begin{itemize}
@@ -44,7 +44,7 @@ Techniques to hand NP Compelte
 \end{itemize}
 
 \section{Approximation Algorithms}
-\label{sec:org53d7a96}
+\label{sec:org95f9582}
 
 \(ALG \leq \alpha OPT\)
 
@@ -58,7 +58,7 @@ Techniques to hand NP Compelte
 If problem is a maximization problem, \(ALG \geq \frac{1}{\alpha} OPT\)
 
 \subsection{Simple Example:}
-\label{sec:orgd95893f}
+\label{sec:orgc20ac71}
 Suppose I know my algorithm is a 1.12-approximation algorithm (\(\alpha=1.12\)). Suppose my algorithm returns a solution of cost=746.125. Then, we know that \(756.125 \leq 1.12 OPT\).
 
 \(\Longrightarrow \frac{746.125}{1.12} = 666.183 \leq OPT \leq 746.125\)
@@ -67,7 +67,7 @@ The will give us a guaranteed upper and lower bound of where OPT should be. Then
 
 
 \subsection{Vertex Cover}
-\label{sec:orgb6db3e2}
+\label{sec:orgdd26587}
 
 VC: given graph, find smallest subset of vertices such that everye edge in the graph has at least one vertex in the subset. 
 
@@ -96,42 +96,55 @@ Two ways to get a better approximation:
 \end{enumerate}
 
 
+
 \subsubsection{Hierarchies:}
-\label{sec:orgecbce7f}
+\label{sec:org60091c0}
 Show the Computibility Hierarchy
 
 Approximability Hierarchy
 \begin{itemize}
-\item NPO
+\item NPO Set
 \begin{itemize}
-\item APX
+\item APX subset in NPO
 \begin{itemize}
-\item Vertex Cover
+\item Vertex Cover is an item in APX
+\item PTAS within APX
+\begin{itemize}
+\item FPTAS subset within PTAS
+\begin{itemize}
+\item Knapsack problem within FPTAS
+\item PO subset within mystery subset (polynomial optimization)
+\begin{itemize}
+\item shorest path
 \end{itemize}
+\end{itemize}
+\end{itemize}
+\end{itemize}
+\item Set cover is an item of NPO (other people proved this, we will trust ti)
 \end{itemize}
 \end{itemize}
 
-
+APX: optimization problems that can be approximated within a constant ratio
 \subsection{Set Cover}
-\label{sec:orgd6dd6b1}
+\label{sec:orgef3b416}
 
 Set Cover: Given a set of elements (universe), and sets containing those elements, find the smallest number of sets so that every element of the universe is included.
 
 \(U  = \{1,4,7,8,10\}\)
 
-\(S  = \left\{ \{1,7,8\}, \{1,4,7\}, \{8,4,7\} \right\}\)
+\(S  = \left\{ \{1,7,8\}, \{1,4,7\}, \{8,4,7\} , \{4, 8, 10\}\right\}\)
 
 
 
 \begin{verbatim}
-Basic Set Cover Algorithm:
+Basic Set Cover Greedy Algorithm:
 
 While element of universe is not included
   select S_i with largest number of excluded elements
 \end{verbatim}
 
 \subsubsection{Solving Set Cover}
-\label{sec:org147d847}
+\label{sec:org81061a9}
 
 Suppose the universe contains \emph{n} elements:
 
@@ -149,4 +162,171 @@ For the first set, we want to select the largest set since it covers the most un
 \[ ? \leq  |\text{Biggest Set}| \leq ? \]
 
 We are guaranteed to do at least as good as lower bound, guaranteed we don't do better than upper bound. Think about this. In this case, we want to find the relationship between the lower bound. Once we have this relationship, everything else falls into place
+
+Suppose the universe contains \(n\) elements. What wcan we say about the first set selected? Answer: It's the biggest!
+
+\[ \text{claim: } \frac{n}{OPT} \leq |\text{Biggest Set}| \]
+
+proof: 
+\[ \text{suppose } \frac{n}{OPT} > |\text{Biggest Set}| \leq |Every set| \]
+
+How many sets does the optimal solution \(S^{OPT}\) use: \(OPT\).
+Then how many elements are covered by those \(OPT\) sets?
+
+Suppose the universe contains n elements. The first set selected will have \(\geq \frac{n}{OPT}\) elements.
+
+Then, the number of elements remaining after the first iteration is \emph{original \# of elements - \# elements removed} \(\rightarrow n \geq \frac{n}{OPT}\)
+
+\[ n_1 \leq n - \frac{n}{OPT} = n \left( 1- \frac{1}{OPT} \right) \]
+
+What can we sayabout the second set selected? \textbf{\textbf{It covers the most uncovered elements}}.
+
+\begin{itemize}
+\item Suppose the first set \emph{was} in the optimal solution
+\begin{itemize}
+\item Then, a remaining set must have at least \(\frac{n_1}{OPT-1}\) uncovered elements.
+
+\[ \Longrightarrow \frac{n_1}{OPT} < \frac{n_1}{OPT -1} \leq |Second Set| \]
+\end{itemize}
+
+\item Suppose the first set \emph{was not} in the optimal solution
+\begin{itemize}
+\item If not, how do the remaining \(OPT -1\) optimal sets cover the remaining \(n_1\) elements?
+\[ \Longrightarrow \frac{n_1}{OPT} \leq |Second Set| \]
+\end{itemize}
+\end{itemize}
+
+
+In general, after \(t\) iteration:
+
+\[ n_t \leq n_{t-1} - \frac{n_{t-1}}{OPT} = n_{t-1} \left(1 - \frac{1}{OPT}\right) \leq \ldots \leq n\left(1 - \frac{1}{OPT}\right)^t \]
+
+The question is what is \(t\)? When we solve \(t\), we solve \(ALG\).
+
+Big picture:
+\begin{enumerate}
+\item How many sets are added each iteration: 1
+\item \(ALG\) = \# of iterations
+\item When does the algorithm terminate: \(n_t < 1\)
+\end{enumerate}
+
+What value of \(t\) makes \(n_t < 1\):
+
+\[ \Longrightarrow ALG \leq ln(n) OPT \]
+
+\textbf{\textbf{It turns out that Set Cover cannot be approximated within the bound of \((1- o(1)) ln(n)\), unless P = NP}}
+
+\section{Knapsack problem}
+\label{sec:org34cf077}
+
+Knapsack: given a set of \(n\) items with values \(v_1, \ldots, v_n\) and weights \(w_1, \ldots, w_n\), select the most valuable combination with \(\text{total weight} \leq W\)
+
+\subsection{DP method}
+\label{sec:orgcc52edf}
+
+How could we approach this? \textbf{\textbf{Dynamic programming sense?}}
+
+Algorithm: is there an optimal substructure? I.E., if I have an optimal solution to some instance, does that imply an optimal solution to a different instance? 
+
+\textbf{*He's going to talk about the intuitive DP version of the problem, then explain why it wouldn't work. *}
+
+\[ \text{Define } opt(i,w) = max\left( opt(i-1, w) , opt (i-1, w-w_i) + v_1 \right) \]
+
+What now:
+\begin{itemize}
+\item for every single weight \(\le\) W and i, calculate \(opt(i,w)\)
+\item no longer polynomial
+\item reducing search space of weights will compromise weight accuracy. not allowed!
+\end{itemize}
+
+If you make a table with items as the rows and total weights as the columns for the DP, how can you check every possible weight? Its trying to turn something continuous into something discrete, and adding different increments of weights will be difficult and it breaks the DP.
+
+Instead, we need to compromise value accuracy isntead of weights.
+
+\subsubsection{Values instead of weights}
+\label{sec:orgf236aa4}
+
+Instead of saying "for a given weight, how much value can we get?" to "given a value threshold, whats the smallest weight i can get?"
+
+Now we have a table with items as the rows and total value as the columns. For every possible total backpack value, go to the bottom row and check each column until the weight threshold is crossed, then we just go back one spot. That will lead to the optimal solution.
+
+Define \(opt(i,V)\) = minimum weight of subset of items \(\{1, \ldots, i\}\) that gives value at least \(V\) (target value).
+
+
+Case 1: if \(i\) is not in the optimal solution for \(\{ 1, \ldots, i\}\):
+\begin{itemize}
+\item \(opt(i,V) = opt(i-1,V)\)
+\end{itemize}
+
+Case 2: if \(i\) is in the optimal solution for \(\{ 1, \ldots, i\}\):
+\begin{itemize}
+\item \(opt(i,V) = opt(i-1,V- v_i) + w_i\)
+\end{itemize}
+
+\textbf{\textbf{We are going to assume the values are integers}}
+
+Algorithim: 
+\begin{enumerate}
+\item For \(0 \leq i \leq n\) and \(0 \leq V \leq n\) max(i under max idk how to type that) \(v_i\), compute \(opt(i,V)\).
+\item Return \(V* = max \{ V: opt(i,V) \leq W \}\)
+\end{enumerate}
+
+Running time: \(O(n^2 \text{max (i under max)} v_i)\)
+
+To make the running time better, we can change the units of the values of the table to lower values, which will increase, but it's not easy for compliated numbers and you can lose information. See below, how 500000 keeps all the information, but the 163882 loses 882 dollors of accuracy:
+
+\[ 500000 \text{ dollars } \rightarrow 5 \text{ hundred-thousand dollars} \]
+\[ 163882 \text{ dollars } \rightarrow 160 \text{ hundred-thousand dollars} \]
+
+
+Algorithm:
+\begin{enumerate}
+\item Let \(v_{max} = \text{max i under max} v_i\)
+\item For each \(i\), let \(v_i' = \lfloor v_i \frac{n}{\epsilon v_{max}} \rfloor\)
+\item Run dynamic programming algorithm using \(\{v'_i\},\{w_i\}, W\)
+\end{enumerate}
+
+Running Time = \(O\left( \frac{n^3}{\epsilon}\right)\)
+
+How does scaling values impact the cost? (how does ALG relate to OPT)
+
+\$S\textsubscript{ALG} = set the algorithm selected.
+\$S\textsubscript{OPT} = set the optimal items.
+
+Need to relate \(\sum_{i \in S_{OPT}} v_i \text{ relate to }  \sum_{i \in S_{ALG}} v_i\)
+
+But the algorithm operates on \(v_i'\):
+
+Need to relate \(\sum_{i \in S_{OPT}} v_i \text{ to } \sum_{i \in S_{OPT}} v_i' \text{ to } \sum_{i \in S_{ALG}} v_i' \text{ to } \sum_{i \in S_{ALG}} v_i\)
+
+
+\(\sum_{i \in S_{OPT}} v_i' = \lfloor v_i \frac{n}{\epsilon v_{max}} \rfloor\)
+
+He does algebra:
+
+\(\sum_{i \in S_{OPT}} v_i' \leq OPT \frac{n}{\epsilon v_{max}}-n\)
+
+How does \(ALG = \sum_{i \in S_{ALG}} v_i \text{ to } OPT = \sum_{i \in S_{OPT}} v_i\)?
+
+He does algebra:
+
+
+\(\sum_{i \in S_{OPT}} v_i' \leq OPT \frac{n}{\epsilon v_{max}}-n\)
+
+ALG is optimal on the scaled values: ALG is the beest at identifying the \textbf{\textbf{highest \emph{scaled} amount}} of value while OPT is the best at identifying the \textbf{\textbf{highest amount}} of value in the backpack.
+
+We test OPT on how well it can perform on the scaled values, and it performs worse than ALG because it's playing a game it wasn't designed to do; OPT is not OPT on the scaled values, but ALG \(is\).
+
+Im not writing all this math. look at the slides if you want. (end of lecture 4/16).
+
+We relate OPT to \(\epsilon v_{max}\).
+
+
+Performance guaranteee: \(ALG \geq (1- \epsilon) OPT\)
+
+Running time: \(O \left( \frac{n^3}{\epsilon} \right)\)
+
+\textbf{\textbf{This is called a fully polynomial-time approximation scheme (FPTAS)}}
+
+We can solve Knapsack instances arbitrarily close to optimal in polynomial time!
 \end{document}
