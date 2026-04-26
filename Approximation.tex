@@ -1,4 +1,4 @@
-% Created 2026-04-16 Thu 13:29
+% Created 2026-04-23 Thu 13:30
 % Intended LaTeX compiler: pdflatex
 \documentclass[11pt]{article}
 \usepackage[utf8]{inputenc}
@@ -33,7 +33,7 @@
 
 
 \section{NP-Complete}
-\label{sec:orgd7a8e9a}
+\label{sec:org9824bf6}
 
 Techniques to hand NP Compelte
 \begin{itemize}
@@ -44,7 +44,7 @@ Techniques to hand NP Compelte
 \end{itemize}
 
 \section{Approximation Algorithms}
-\label{sec:org95f9582}
+\label{sec:org98b8b0b}
 
 \(ALG \leq \alpha OPT\)
 
@@ -58,7 +58,7 @@ Techniques to hand NP Compelte
 If problem is a maximization problem, \(ALG \geq \frac{1}{\alpha} OPT\)
 
 \subsection{Simple Example:}
-\label{sec:orgc20ac71}
+\label{sec:orgf255d4b}
 Suppose I know my algorithm is a 1.12-approximation algorithm (\(\alpha=1.12\)). Suppose my algorithm returns a solution of cost=746.125. Then, we know that \(756.125 \leq 1.12 OPT\).
 
 \(\Longrightarrow \frac{746.125}{1.12} = 666.183 \leq OPT \leq 746.125\)
@@ -67,7 +67,7 @@ The will give us a guaranteed upper and lower bound of where OPT should be. Then
 
 
 \subsection{Vertex Cover}
-\label{sec:orgdd26587}
+\label{sec:org8722bf5}
 
 VC: given graph, find smallest subset of vertices such that everye edge in the graph has at least one vertex in the subset. 
 
@@ -98,7 +98,7 @@ Two ways to get a better approximation:
 
 
 \subsubsection{Hierarchies:}
-\label{sec:org60091c0}
+\label{sec:org6258a9b}
 Show the Computibility Hierarchy
 
 Approximability Hierarchy
@@ -126,7 +126,7 @@ Approximability Hierarchy
 
 APX: optimization problems that can be approximated within a constant ratio
 \subsection{Set Cover}
-\label{sec:orgef3b416}
+\label{sec:orgf92927c}
 
 Set Cover: Given a set of elements (universe), and sets containing those elements, find the smallest number of sets so that every element of the universe is included.
 
@@ -144,7 +144,7 @@ While element of universe is not included
 \end{verbatim}
 
 \subsubsection{Solving Set Cover}
-\label{sec:org81061a9}
+\label{sec:orgaa6ddfc}
 
 Suppose the universe contains \emph{n} elements:
 
@@ -217,12 +217,12 @@ What value of \(t\) makes \(n_t < 1\):
 \textbf{\textbf{It turns out that Set Cover cannot be approximated within the bound of \((1- o(1)) ln(n)\), unless P = NP}}
 
 \section{Knapsack problem}
-\label{sec:org34cf077}
+\label{sec:orgee98a9f}
 
 Knapsack: given a set of \(n\) items with values \(v_1, \ldots, v_n\) and weights \(w_1, \ldots, w_n\), select the most valuable combination with \(\text{total weight} \leq W\)
 
 \subsection{DP method}
-\label{sec:orgcc52edf}
+\label{sec:org25a8989}
 
 How could we approach this? \textbf{\textbf{Dynamic programming sense?}}
 
@@ -231,6 +231,8 @@ Algorithm: is there an optimal substructure? I.E., if I have an optimal solution
 \textbf{*He's going to talk about the intuitive DP version of the problem, then explain why it wouldn't work. *}
 
 \[ \text{Define } opt(i,w) = max\left( opt(i-1, w) , opt (i-1, w-w_i) + v_1 \right) \]
+
+\[ E[X_e] = 1(2/3) + 0()1/3 = 2/3 \]
 
 What now:
 \begin{itemize}
@@ -244,7 +246,7 @@ If you make a table with items as the rows and total weights as the columns for 
 Instead, we need to compromise value accuracy isntead of weights.
 
 \subsubsection{Values instead of weights}
-\label{sec:orgf236aa4}
+\label{sec:org2e10edd}
 
 Instead of saying "for a given weight, how much value can we get?" to "given a value threshold, whats the smallest weight i can get?"
 
@@ -329,4 +331,263 @@ Running time: \(O \left( \frac{n^3}{\epsilon} \right)\)
 \textbf{\textbf{This is called a fully polynomial-time approximation scheme (FPTAS)}}
 
 We can solve Knapsack instances arbitrarily close to optimal in polynomial time!
+
+
+\section{Randomization}
+\label{sec:orgc4e2a8f}
+
+
+\subsection{Graph Coloring}
+\label{sec:org409ea09}
+
+Family of graph problems that involve coloring vertices (or edges) subject to various constraints.
+
+\textbf{\textbf{Minimum Vertex Coloring:}} Color the vertices of a graph useing the smallest number of colors so adjacent vertices are diffreent colors. This is NP-hard.
+
+\subsubsection{Max 3-Coloring}
+\label{sec:org3abbbcc}
+
+An edge in a graph is \emph{satisfied} if its nodes are colored different colors. Using only three colors, color the nodes of a graph such that the number of satisfied edges is maximized.
+
+
+Algorithm: For each vertex, randomy assign it one of the three colors with a \(\frac{1}{3}\) probability.
+\begin{itemize}
+\item Running time \(O(n)\)
+\item Valid? Yes, colors all nodes with \(\leq 3\) colors.
+\item Optimal? probably not\ldots{}
+\end{itemize}
+
+
+Note: If problem is a max problem: \(ALG \geq \frac{1}{\alpha} OPT\)
+
+
+Goal: show this algorithm is \emph{expected to perform} as a \(\frac{3}{2}\) -approximation algorithm.
+
+What is the probability that a single edge is statisfied?
+\begin{itemize}
+\item All possibilities: (\emph{bb}, bg, br, gb, \emph{gg}, gr, rb, rg, \emph{rr})
+\item \(\frac{6}{9} = \frac{2}{3}\)
+\end{itemize}
+
+Define \(X_e\) = 1, if e is satisfied, 0 if e is not satisfied
+
+
+
+What is \(\sum_e X_e\)?
+\begin{itemize}
+\item \(ALG\) - It's the number of satisfied edges.
+\end{itemize}
+
+How many edges we expect to satisfiy, and we can relate this to OPT (Since \(OPT \leq |E|\) (cant have more satisfied edges than there are edges!)):
+\[ E[ALG] = E [ \sum_e X_e] = \sum_e E[X_e] = \sum_e \frac{2}{3} = \frac{2}{3} |E| \]
+\[  \Longrightarrow E[ALG] = \frac{2}{3} |E| \geq \frac{2}{3} OPT \]
+
+
+\subsection{SAT \& 3-SAT}
+\label{sec:org61b09d6}
+
+\[ \phi = (x_1 \vee x_1 \vee x_2) \wedge (\overline{x_1} \vee \overline{x_2} \vee \overline{x_2}) \wedge (\overline{x_1} \vee x_1 \vee x_2) \]
+
+\(\phi\) is a formula with clauses composed of Boolean variables connected by ORs, and clauses connected by ANDs. Can you set the variables to \textbf{\textbf{true}} or \textbf{\textbf{false}} so taht \(\phi\) evaluates to \textbf{\textbf{true}}?
+
+
+
+\[ \phi = (x_1 \vee x_1 \vee x_2) \wedge (\overline{x_1} \vee \overline{x_2} \vee
+\overline{x_2}) \wedge (\overline{x_1} \vee x_1 \vee x_2) \]
+
+Solution:\(x_1\) = \emph{false}, \(x_2\) = \emph{true}
+
+
+
+\[ (F \vee F \vee T) \wedge (T \vee F \vee F) \wedge (T \vee T \vee T) \]
+\[ T \wedge T \wedge T \Longrightarrow T \]
+
+
+SAT = \{<\(\phi\)>: \(\phi\) is a satisfieable formula \}
+
+3-SAT = \{<\(\phi\)>: \(\phi\) is a satisfieable formula with 3 variables per clause\}
+
+
+\subsection{Max 3-SAT}
+\label{sec:orgf08811b}
+
+\textbf{\textbf{Max 3-SAT Problem:}} Given a 3-SAT instance (with unique variables in each clause), set variable values so that the number of satisfied clauses is maximized.
+
+
+Algorithm: Assign \(x_i\) = true with probabilities 1/2. Otherwise, set it to false.
+
+We will follow the same technique that we used for max 3-color.
+
+Probabilities that a clause is satisfied = \(\frac{7}{8}\).
+
+Define Z\textsubscript{c} = 1 if clause c is satisfied, 0 otherwise.
+
+\[ E[Z_c] = 1 \left(\frac{7}{8} \right) + 0 \left(\frac{1}{8} \right) = \frac{7}{8} \]
+
+\newpage
+
+Number of clauses we expect:
+
+\[ E[ALG] = E[\sum_c Z_c] = \sum_c E[Z_c] = \sum_c \frac{7}{8} = \frac{7}{8} |C| \]
+
+\[ \Longrightarrow [ALG] = \frac{7}{8} |C| \geq \frac{7}{8} OPT \]
+
+
+
+\subsection{ILP-Based Approximation}
+\label{sec:org73e5c36}
+
+\subsubsection{Vertex Cover ILP}
+\label{sec:orged8ba0c}
+
+He defines VC again, then shows the ILP for it. We can change the ILP (NP) to an LP (P), then say that our P solution isn't that far off from the NP solution. He has the \ldots{} \textbf{\textbf{Check lecture for this part}}
+
+What is the relationship between ALG and OPT?
+
+Can we bound OPT from below?
+\begin{itemize}
+\item Let x\textsubscript{ILP} and x\textsubscript{LP} be the set of x values found by the ILP and LP
+\end{itemize}
+
+Claim (proved): \(\sum x_{LP} \ leq OPT\)
+
+How does \(\sum\) x\textsubscript{LP} relate to ALG?
+
+\(\sum x_{LP} = \sum_{x_i \in x_{LP}} x_i \geq \sum_{x_i \in x_{LP}:x_i \geq \frac{1}{2}} x_i\) beacuse it's a subset of \(x_{LP}\).
+
+\(\geq \sum_{x_i \in x_{LP}:x_i \geq \frac{1}{2}} \frac{1}{2}\), because each \(x_i\) is at least \(\frac{1}{2}\).
+
+equation i didnt have time to write here
+
+What is the relationship between ALG and OPT?
+
+\(\sum x_{LP} \geq \frac{1}{2} ALG \text{ and } \sum x_{LP} \leq OPT\)
+
+\textbf{\textbf{What is preventing us from making the 1/2 fraction higher?}}
+
+\section{Randomized Rounding}
+\label{sec:org9c1b46e}
+
+\subsection{Set Cover}
+\label{sec:org01e992f}
+
+If you don't know the goal, look it up.
+
+We are gonna build an ILP for it, relax it to an LP, then do some magic.
+
+
+ILP:  (math notation on lecture slides)
+\begin{itemize}
+\item Decision Variables: Whether we select a set or not
+\item Objective: minimize number of sets selected to cover entire universe
+\item Constraints: every single element of the universe is in at least one selected set.
+\end{itemize}
+
+WThis is an ILP because you cannot select portions of sets
+
+We are going to relax it, so \(0 \leq x_s \leq 1\) for each set s, then if  \(x_s \geq 1\2, add set s to out subset\)
+
+Why does this work for vertex cover and not set cover? Come back to the lecture on this. 
+
+
+The LP will give us numbres for \(x_s\), then we are using those numbers as our probability.
+Instead, we are going to  add set \(s\) to our subset \(S_{ALG}\) with probability of \(x_s\).
+Basically, whats happening is we are using the relaxed ILP (LP) to give us the continuous values for \(x_s\), then we are using those \(x_s\)'s (there is one per set), choose a random set, then choose to add it with the probability \(x_s\).
+
+Concerns about this aglorithm:
+\begin{itemize}
+\item validity isn't guaranteed, but we can run the algorithm again for a chance for better validity. However, this can change running time since we don't know how many times we need to run the algorithm for the output to become valid.
+\end{itemize}
+
+We need to pick where the uncertainty lies (validity, the second one, running time) and try to account for it.
+
+\noindent\rule{\textwidth}{0.5pt}
+\begin{enumerate}
+\item What is the size of the solution?
+\begin{itemize}
+\item Let \(x_s^*\) be the optimal solutions to the LP relaxation. These are the probabilities we get from the LP output.
+\item Define random variable \(X_s\) = 1 if s is in alg, 0 otherwise
+\item To relate ALG to OPT, we will use the expected value. ALG is the sum of X variables set to 1 that came from the LP.
+\end{itemize}
+
+\[ E[\sum_{s \in s_{ALG}} X_s]\]
+\end{enumerate}
+
+The expected value of x\textsubscript{s} is the probability of x\textsubscript{s} being 1, which is the value from the linear program. Which means the Expected value of our ALG is the sum of \(x_s^*\), since \(x_s^*\) is the probability of \(X_s =1\)
+
+This is the objective function for the LP: \(\sum_{s \in S} x_s^* = OPT_{LP} \leq OPT\).
+
+This is saying that out Epected value of ALG is \emph{better than or equal to} OPT. What does this mean? Well, we can't do better than OPT because it's OPT\ldots{} So this means our validity is probably really bad.
+
+\noindent\rule{\textwidth}{0.5pt}
+2(two). What is the probability solution is valid?
+\begin{itemize}
+\item Let \(S_u\) be the sets of \(S\) that contain element \(u\)
+\begin{itemize}
+\item Let \(S_u\) be sets of S that contain element u. u is covered by \(S_{ALG} \iff \sum_{S_u} X_s \geq 1\).
+\end{itemize}
+\end{itemize}
+
+\(P[u \text{ not covered by } S_{ALG}] = \prod_{s_u} (1-x_s^*)\), since X\textsubscript{s} independent
+
+He then talks about how we can bound the product with algebra. For now, just agree that:
+\[ P[u \text{ not covered by } S_{ALG}] = e^{-\sum_{s_u} x_s^*} \leq \frac{1}{e} \approx 0.37, \text{ since } \sum_s_u x_s^* \geq 1  \]
+
+\noindent\rule{\textwidth}{0.5pt}
+
+What did we accomplish? Its highly unlikely \(S_ALG\) will cover all \(U\), but each individual element has good likelihood of being covered. We can run it, get some sets we picked, see it's not valid, keep some of the sets, run the algorithm again with some of our kept sets, and see if any sets got added. Basically, instead of starting over, we grow our collection of sets every time we run it instead of throwing possible solutions out every time we run the algorithm.
+
+---
+
+Algorithm:
+We will solve the LP, then perform the following:
+\begin{enumerate}
+\item Add set \(s\) to out subset \{S\textsubscript{ALG}\} with probability of \(x_s\).
+\item Repeat step 1 \$T\$-times, while adding sets to S\textsubscript{ALG}.
+\end{enumerate}
+
+---
+
+Supposed \(T = ln 4n\), where \(|U| = n\) (ln4n isn't picked randomly, it makes the math work nicely.)
+
+\begin{enumerate}
+\item What is the size of the solution?
+\end{enumerate}
+Expected value of ALG is the sum of \(x_s\).
+
+\[ E[ALG]  = T \sum_{s \in S} X_s^* \text{, by previous bound}\]
+
+What we want to show: \(ALG \leq 4ln(4n) OPT\)
+We will show this by showing the chance that \(ALG \leq 4ln(4n) OPT\) does \emph{not} happen (i.e., when will it fail?), aka what is the probability that this fails?
+
+\[ ALG \leq 4ln(4n) OPT \leq P[ALG > 4T \sum_{s \in S} x_s^*] \]
+
+The equation above is a general statement that the probabilty of some event increases when the threshold decreases. Like changing "whats the probability of your child being taller than 6 feet" to "whats the probability of your child being taller than 4 feet".
+
+
+\[ \text{Markov's inequality: }P[X \geq a] \leq \frac{E[X]}{a} \]
+
+When you use Markov's inequality on our inequality, we get \(\frac{1}{4}\). Look at lecture if you want to show this.
+
+---
+
+2(two). What is the probability solution is valid?
+\begin{itemize}
+\item He shows the probabilty of a single element not being covered is \(\frac{1}{4n}\) in the lecture.
+\end{itemize}
+
+other things happen.
+
+----
+
+The solution is valid with a probability of 3/4, and the probability of the running time(check if this is true) , the probability is greater than or equal to \(\frac{9}{16} \approx .56\)..
+
+If we run this \(n\) times: the probability of the run being good is \(\left( 1-\frac{7}{16} \right)^n\)
+
+
+The more we run it, the more likely the algorithm will work. This is a tradeoff.
+
+We have a high likelihood of a good solution with guaranteed polynomial run time.
+
+Can put our uncertainty onto running time instead of "goodness"? Yes!.
 \end{document}

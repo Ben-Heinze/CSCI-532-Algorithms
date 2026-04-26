@@ -178,6 +178,8 @@ Algorithm: is there an optimal substructure? I.E., if I have an optimal solution
 
 \[ \text{Define } opt(i,w) = max\left( opt(i-1, w) , opt (i-1, w-w_i) + v_1 \right) \]
 
+\[ E[X_e] = 1(2/3) + 0()1/3 = 2/3 \]
+
 What now:
 - for every single weight \leq W and i, calculate $opt(i,w)$
 - no longer polynomial
@@ -268,3 +270,225 @@ Running time: $O \left( \frac{n^3}{\epsilon} \right)$
 **This is called a fully polynomial-time approximation scheme (FPTAS)**
 
 We can solve Knapsack instances arbitrarily close to optimal in polynomial time!
+
+
+* Randomization
+
+
+** Graph Coloring
+
+Family of graph problems that involve coloring vertices (or edges) subject to various constraints.
+
+**Minimum Vertex Coloring:** Color the vertices of a graph useing the smallest number of colors so adjacent vertices are diffreent colors. This is NP-hard.
+
+*** Max 3-Coloring
+
+An edge in a graph is /satisfied/ if its nodes are colored different colors. Using only three colors, color the nodes of a graph such that the number of satisfied edges is maximized.
+
+
+Algorithm: For each vertex, randomy assign it one of the three colors with a $\frac{1}{3}$ probability.
+- Running time $O(n)$
+- Valid? Yes, colors all nodes with $\leq 3$ colors.
+- Optimal? probably not...
+
+
+Note: If problem is a max problem: $ALG \geq \frac{1}{\alpha} OPT$
+
+
+Goal: show this algorithm is /expected to perform/ as a $\frac{3}{2}$ -approximation algorithm.
+
+What is the probability that a single edge is statisfied?
+- All possibilities: (/bb/, bg, br, gb, /gg/, gr, rb, rg, /rr/)
+- $\frac{6}{9} = \frac{2}{3}$
+
+Define $X_e$ = 1, if e is satisfied, 0 if e is not satisfied
+
+
+
+What is $\sum_e X_e$?
+- $ALG$ - It's the number of satisfied edges.
+
+How many edges we expect to satisfiy, and we can relate this to OPT (Since $OPT \leq |E|$ (cant have more satisfied edges than there are edges!)):
+\[ E[ALG] = E [ \sum_e X_e] = \sum_e E[X_e] = \sum_e \frac{2}{3} = \frac{2}{3} |E| \]
+\[  \Longrightarrow E[ALG] = \frac{2}{3} |E| \geq \frac{2}{3} OPT \]
+
+
+** SAT & 3-SAT
+
+\[ \phi = (x_1 \vee x_1 \vee x_2) \wedge (\overline{x_1} \vee \overline{x_2} \vee \overline{x_2}) \wedge (\overline{x_1} \vee x_1 \vee x_2) \]
+
+$\phi$ is a formula with clauses composed of Boolean variables connected by ORs, and clauses connected by ANDs. Can you set the variables to **true** or **false** so taht $\phi$ evaluates to **true**?
+
+
+
+\[ \phi = (x_1 \vee x_1 \vee x_2) \wedge (\overline{x_1} \vee \overline{x_2} \vee
+\overline{x_2}) \wedge (\overline{x_1} \vee x_1 \vee x_2) \]
+
+Solution:$x_1$ = /false/, $x_2$ = /true/
+
+
+
+\[ (F \vee F \vee T) \wedge (T \vee F \vee F) \wedge (T \vee T \vee T) \]
+\[ T \wedge T \wedge T \Longrightarrow T \]
+
+
+SAT = {<$\phi$>: $\phi$ is a satisfieable formula }
+
+3-SAT = {<$\phi$>: $\phi$ is a satisfieable formula with 3 variables per clause}
+
+
+** Max 3-SAT
+
+**Max 3-SAT Problem:** Given a 3-SAT instance (with unique variables in each clause), set variable values so that the number of satisfied clauses is maximized.
+
+
+Algorithm: Assign $x_i$ = true with probabilities 1/2. Otherwise, set it to false.
+
+We will follow the same technique that we used for max 3-color.
+
+Probabilities that a clause is satisfied = $\frac{7}{8}$.
+
+Define Z_c = 1 if clause c is satisfied, 0 otherwise.
+
+\[ E[Z_c] = 1 \left(\frac{7}{8} \right) + 0 \left(\frac{1}{8} \right) = \frac{7}{8} \]
+
+\newpage
+
+Number of clauses we expect:
+
+\[ E[ALG] = E[\sum_c Z_c] = \sum_c E[Z_c] = \sum_c \frac{7}{8} = \frac{7}{8} |C| \]
+
+\[ \Longrightarrow [ALG] = \frac{7}{8} |C| \geq \frac{7}{8} OPT \]
+
+
+
+** ILP-Based Approximation
+
+*** Vertex Cover ILP
+
+He defines VC again, then shows the ILP for it. We can change the ILP (NP) to an LP (P), then say that our P solution isn't that far off from the NP solution. He has the ... **Check lecture for this part**
+
+What is the relationship between ALG and OPT?
+
+Can we bound OPT from below?
+- Let x_{ILP} and x_{LP} be the set of x values found by the ILP and LP
+
+Claim (proved): $\sum x_{LP} \ leq OPT$
+
+How does \sum x_{LP} relate to ALG?
+
+$\sum x_{LP} = \sum_{x_i \in x_{LP}} x_i \geq \sum_{x_i \in x_{LP}:x_i \geq \frac{1}{2}} x_i$ beacuse it's a subset of $x_{LP}$.
+
+$\geq \sum_{x_i \in x_{LP}:x_i \geq \frac{1}{2}} \frac{1}{2}$, because each $x_i$ is at least $\frac{1}{2}$.
+
+equation i didnt have time to write here
+
+What is the relationship between ALG and OPT?
+
+$\sum x_{LP} \geq \frac{1}{2} ALG \text{ and } \sum x_{LP} \leq OPT$
+
+**What is preventing us from making the 1/2 fraction higher?**
+
+* Randomized Rounding
+
+** Set Cover
+
+If you don't know the goal, look it up.
+
+We are gonna build an ILP for it, relax it to an LP, then do some magic.
+
+
+ILP:  (math notation on lecture slides)
+- Decision Variables: Whether we select a set or not
+- Objective: minimize number of sets selected to cover entire universe
+- Constraints: every single element of the universe is in at least one selected set. 
+
+WThis is an ILP because you cannot select portions of sets
+
+We are going to relax it, so $0 \leq x_s \leq 1$ for each set s, then if  $x_s \geq 1\2, add set s to out subset$
+
+Why does this work for vertex cover and not set cover? Come back to the lecture on this. 
+
+
+The LP will give us numbres for $x_s$, then we are using those numbers as our probability.
+Instead, we are going to  add set $s$ to our subset $S_{ALG}$ with probability of $x_s$.
+Basically, whats happening is we are using the relaxed ILP (LP) to give us the continuous values for $x_s$, then we are using those $x_s$'s (there is one per set), choose a random set, then choose to add it with the probability $x_s$.
+
+Concerns about this aglorithm:
+- validity isn't guaranteed, but we can run the algorithm again for a chance for better validity. However, this can change running time since we don't know how many times we need to run the algorithm for the output to become valid.
+
+We need to pick where the uncertainty lies (validity, the second one, running time) and try to account for it.
+-----
+1. What is the size of the solution?
+   - Let $x_s^*$ be the optimal solutions to the LP relaxation. These are the probabilities we get from the LP output.
+   - Define random variable $X_s$ = 1 if s is in alg, 0 otherwise
+   - To relate ALG to OPT, we will use the expected value. ALG is the sum of X variables set to 1 that came from the LP.
+
+  \[ E[\sum_{s \in s_{ALG}} X_s]\]
+
+The expected value of x_s is the probability of x_s being 1, which is the value from the linear program. Which means the Expected value of our ALG is the sum of $x_s^*$, since $x_s^*$ is the probability of $X_s =1$
+
+This is the objective function for the LP: $\sum_{s \in S} x_s^* = OPT_{LP} \leq OPT$.
+
+This is saying that out Epected value of ALG is /better than or equal to/ OPT. What does this mean? Well, we can't do better than OPT because it's OPT... So this means our validity is probably really bad.
+---------------
+2(two). What is the probability solution is valid?
+   - Let $S_u$ be the sets of $S$ that contain element $u$
+	- Let $S_u$ be sets of S that contain element u. u is covered by $S_{ALG} \iff \sum_{S_u} X_s \geq 1$.
+
+$P[u \text{ not covered by } S_{ALG}] = \prod_{s_u} (1-x_s^*)$, since X_s independent
+
+He then talks about how we can bound the product with algebra. For now, just agree that:
+\[ P[u \text{ not covered by } S_{ALG}] = e^{-\sum_{s_u} x_s^*} \leq \frac{1}{e} \approx 0.37, \text{ since } \sum_s_u x_s^* \geq 1  \]
+
+-------
+
+What did we accomplish? Its highly unlikely $S_ALG$ will cover all $U$, but each individual element has good likelihood of being covered. We can run it, get some sets we picked, see it's not valid, keep some of the sets, run the algorithm again with some of our kept sets, and see if any sets got added. Basically, instead of starting over, we grow our collection of sets every time we run it instead of throwing possible solutions out every time we run the algorithm.
+
+---
+
+Algorithm:
+We will solve the LP, then perform the following:
+1. Add set $s$ to out subset {S_ALG} with probability of $x_s$.
+2. Repeat step 1 $T$-times, while adding sets to S_{ALG}.
+
+---
+
+Supposed $T = ln 4n$, where $|U| = n$ (ln4n isn't picked randomly, it makes the math work nicely.)
+
+1. What is the size of the solution?
+Expected value of ALG is the sum of $x_s$.
+
+\[ E[ALG]  = T \sum_{s \in S} X_s^* \text{, by previous bound}\]
+
+What we want to show: $ALG \leq 4ln(4n) OPT$
+We will show this by showing the chance that $ALG \leq 4ln(4n) OPT$ does /not/ happen (i.e., when will it fail?), aka what is the probability that this fails?
+
+\[ ALG \leq 4ln(4n) OPT \leq P[ALG > 4T \sum_{s \in S} x_s^*] \]
+
+The equation above is a general statement that the probabilty of some event increases when the threshold decreases. Like changing "whats the probability of your child being taller than 6 feet" to "whats the probability of your child being taller than 4 feet".
+
+
+\[ \text{Markov's inequality: }P[X \geq a] \leq \frac{E[X]}{a} \]
+
+When you use Markov's inequality on our inequality, we get $\frac{1}{4}$. Look at lecture if you want to show this.
+
+---
+
+2(two). What is the probability solution is valid?
+- He shows the probabilty of a single element not being covered is $\frac{1}{4n}$ in the lecture.
+
+other things happen.
+
+----
+
+The solution is valid with a probability of 3/4, and the probability of the running time(check if this is true) , the probability is greater than or equal to $\frac{9}{16} \approx .56$..
+
+If we run this $n$ times: the probability of the run being good is $\left( 1-\frac{7}{16} \right)^n$
+
+
+The more we run it, the more likely the algorithm will work. This is a tradeoff.
+
+We have a high likelihood of a good solution with guaranteed polynomial run time.
+
+Can put our uncertainty onto running time instead of "goodness"? Yes!.
