@@ -1,4 +1,4 @@
-% Created 2026-04-09 Thu 17:52
+% Created 2026-04-26 Sun 19:18
 % Intended LaTeX compiler: pdflatex
 \documentclass[11pt]{article}
 \usepackage[utf8]{inputenc}
@@ -28,13 +28,11 @@
 \begin{document}
 
 \maketitle
-\tableofcontents
-
 
 
 
 \section{Problem 1.}
-\label{sec:org0cdef60}
+\label{sec:orge3ba59f}
 
 
 The maximum-weight matching problem on a bipartite graph is as follows:
@@ -43,28 +41,164 @@ weight such that no edges share a node. Formulate this problem as an ILP.
 
 
 \section{Solution 1}
-\label{sec:orgfb7b118}
+\label{sec:org48b7878}
 
-\(x_i \in \{0,1\} =\) indicates if vertex \(i\) is selected
+\(x_{ij} \in \{0,1\} =\) indicates if vertex \(i\) is selected
 
-Objecive:
-max()
-
+Objective: max \(\sum x_{ij}\)
 
 Constraints:
 \begin{itemize}
-\item 
-
-\item 
-
-\item 
+\item \(x_{ij} \leq 1\), for each edge \(e = (i,j)\), which is saying that the edge x\textsubscript{ij} can be selected at most, once, which satisfies the restraint that each node can be selected
 \end{itemize}
 
-
+\noindent\rule{\textwidth}{0.5pt}
 
 \section{Problem 2.}
-\label{sec:orgf123476}
+\label{sec:org63fd83b}
 
 If you remove the integer restriction on variables in the ILP from the previous
 problem, will the resulting LP still find valid optimal solutions to the maximum-weight matching problem on bipartite graphs? Why or why not?
+
+\section{Solution 2.}
+\label{sec:orgcd1c4e5}
+
+No, the LP will not find the solution because
+
+
+
+\noindent\rule{\textwidth}{0.5pt}
+
+
+\section{Problem 3.}
+\label{sec:org5041493}
+
+Suppose we have \(n\) tasks we want completed and \(w\) identical workers who can complete them. Each task has a time \(t_i\) it takes a worker to complete. Let \(A_w\) denote the tasks assigned to worker \(w\). This means that worker \(w\)'s work time will be \(T_w = \sum_{i \in A_w} t_i\). The goal is to assign all tasks to workers in such a way as to minimize the work time of the worker with the largest work time. I.e., minimize \(\text{max}_w T_w\).
+
+Consider the following algorithm: For each task (in arbitrary order), assign the task to the worker who currently has the smallest work time (smallest current \(T_w\)). Show that this algorithm is a 2-approximation algorithm.
+
+Hint: First show that \(\frac{1}{w} \sum_i t_i \leq OPT\), then consider the last taslk assigned to the worker responsible for the algorithm's cost. Why was that task assigned to that worker?
+
+\section{Solution 3.}
+\label{sec:orge939459}
+
+continue;
+
+
+
+\noindent\rule{\textwidth}{0.5pt}
+
+
+\section{Problem 4.}
+\label{sec:org51ad5da}
+
+Consider the following algorithm for the Knapsack problem discussed in class: For each item, calculate its value to weight ratio and greedily fill the knapsack with the highest valued item at each iteration. What is the approximation ratio for this algorithm? Explain why that is the case.
+
+\section{Solution 4.}
+\label{sec:orga7c7d5e}
+
+The greedy algorithm for the knapsack problem would be to choose the largest-valued item, and put it in the sack. If the largest-valued item weighs more than the capacity of the backpack, choose the next highest-valued item.
+
+To approximate the ratio for this algorithm, we must find a connection between our algorthm (\(ALG\)), and the optimal agorithm (\(OPT\)). This problem is a maximizing the value, so the formula we will use is:
+
+\begin{verbatim}
+Find highest-valued item, and see if it fits in the knapsack
+If the item fits in the knapsack, add it, if not, choose the next highest item
+Loop until there are no more items to fit in the knapsack.
+\end{verbatim}
+
+\[  ALG  \geq \frac{1}{\alpha} OPT \]
+
+Where \(\alpha\) is the approximation ratio.
+
+\begin{itemize}
+\item Let \(ALG\) be the set of items selected by the algorithm
+
+\item Let \(OPT\) be the set of items selected in the optimal solution
+
+We need to bound the minimal number of sets in ALG by bounding the minimum number of iterations.
+\end{itemize}
+
+In the first set, we want to choose the highest valued item
+
+\[ ? \geq | \text{ max valued item } |  \geq ?  \]
+
+We are guaranteed to do at least as good as our lower bound, and guaranteed we won't do better than our upper bound
+
+What can we say about our first selected item? It's the biggest!
+
+\[ \text{Claim:} \frac{n}{OPT} \leq |\text{ biggest set}| \]
+
+
+\noindent\rule{\textwidth}{0.5pt}
+
+\section{Problem 5.}
+\label{sec:orgb35b536}
+
+Consider the following algorithm for the Knapsack problem discussed in class: Select the best of:
+\begin{enumerate}
+\item The output from the algorithm in problem 4.
+
+\item The single higest-valued item (whose weight is below the threshold).
+\end{enumerate}
+
+What is the approximation ratio for this algorithm? Explan why that is the case.
+
+Hint: Consider what would happen if we were allowed to take fractional amounts of the items.
+
+\section{Solution 5.}
+\label{sec:orgb709569}
+
+continue;
+
+\noindent\rule{\textwidth}{0.5pt}
+
+
+\section{Problem 6.}
+\label{sec:org89aebe5}
+
+Consider this variation of the classic Set Cover problem: Suppose we have a universe of elements \(U\) and collection of sets \(S\) where each set \(S_i \in S\) has a non-negative cost \(c_i\) associated with it. Also suppose that each element in the universe appears in at most \(d\) sets (fixed value not dependent on which element from the universe). The goal is to select the least cost subset of \(S\) such that the cost of the selected subset is minimized, but that each element of \(U\) is in a selected set.
+
+Formulate this problem as an ILP, relax the ILP, then perform a deterministic rounding procedure to find an approximation algorithm. Describe the algorithm and prove that it is a \$d\$-approximation algorithm.
+
+\section{Solution 6.}
+\label{sec:orge9a07ab}
+
+Continue;
+
+
+\noindent\rule{\textwidth}{0.5pt}
+
+\section{Problem 7.}
+\label{sec:org2676328}
+
+The Max Cut problem is as follows: given an undirected graph \(G = (V,E)\) with non-negative edge weights, find a cut \((A, B)\) such that the sum of the edge weights that cross the cut is maximized.
+
+Consider the following randomized algorithm for Max Cut: Assign vertex \(v\) to a set \(A\) with probability \frac{1}{2}. Let \(B = V \textbackslash A\).
+
+Show that this algorithm is a \$\frac{1}{2}-approximation algorithm.
+
+
+\section{Soltuion 7.}
+\label{sec:orgb171105}
+
+Continue;
+
+
+
+\noindent\rule{\textwidth}{0.5pt}
+
+
+
+\section{Problem 8.}
+\label{sec:orgc1d91bc}
+
+The Minimum Dominating Set problem is: Given a graph, find the smallest subset of the vertices such that each remaining vertex has a neighbor in the selected subset. Find an approximation algorithm for the Minimum Dominating Set problem.
+
+Hint: Draw it out and see if it seems similar to a problem we studied in class).
+
+\section{Solution 8.}
+\label{sec:org7f25b32}
+
+Continue;
 \end{document}
