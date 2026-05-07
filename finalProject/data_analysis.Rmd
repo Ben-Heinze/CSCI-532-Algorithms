@@ -1,0 +1,187 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+
+```{r}
+library(tidyverse)
+library(ggplot2)
+library(dplyr)
+
+# Load data
+df <- read_csv("results.csv")
+
+# Clean algorithm column: strip surrounding single quotes
+df <- df %>%
+  mutate(algorithm = str_remove_all(algorithm, "'"))
+
+df <- df %>% rename(n = `graph_size (n)`)
+
+
+
+# Summarize: mean + standard error for shading
+summary_df <- df %>%
+  group_by(algorithm, graph_size = n, density) %>%
+  summarise(
+    mean_time = mean(solve_time),
+    sd_time = sd(solve_time),
+    se_time = sd_time / sqrt(n()),
+    .groups = "drop"
+  )
+
+# Plot
+ggplot(summary_df, aes(x = graph_size, y = mean_time, color = as.factor(density))) +
+  geom_line() +
+  geom_point(size = 2) +
+  
+  facet_wrap(~ algorithm, scales = "free_y") +
+  
+  labs(
+    title = "Solve Time vs Graph Size Separated by Graph Density",
+    x = "Graph Size (n)",
+    y = "Solve Time",
+    color = "Density",
+    fill = "Density"
+  ) +
+  
+  theme_minimal() +
+  theme(
+    strip.text = element_text(size = 12, face = "bold")
+  )
+
+```
+**Average solve time for graph sizes**
+
+```{r}
+# Compute average solve time over the 5 trials
+avg_df <- df %>%
+  group_by(algorithm, graph_size = n, density) %>%
+  summarise(
+    mean_time = mean(solve_time),
+    .groups = "drop"
+  )
+
+# If you want ONE line per algorithm (averaging across densities too):
+avg_df2 <- avg_df %>%
+  group_by(algorithm, graph_size) %>%
+  summarise(
+    mean_time = mean(mean_time),
+    .groups = "drop"
+  )
+
+# Plot
+p <- ggplot(avg_df2, aes(x = graph_size, y = mean_time, color = algorithm)) +
+  geom_line(size = 1) +
+  geom_point(size = 2) +
+  
+  labs(
+    title = "Average Solve Time vs Graph Size",
+    x = "Number of Nodes (n)",
+    y = "Solve Time (ms)",
+    color = "Algorithm"
+  ) +
+  
+  theme_minimal()
+  
+  ggsave(
+    "./plots/solve_time_graph_size.png",
+    plot = p,
+    width = 10,
+    height = 6,
+    dpi = 600
+  )
+  
+print(p)
+```
+
+
+
+
+
+```{r}
+library(ggplot2)
+library(dplyr)
+
+# Average over the 5 trials
+summary_df <- df %>%
+  group_by(graph_size = n, density, algorithm) %>%
+  summarise(
+    mean_time = mean(solve_time),
+    .groups = "drop"
+  )
+
+# Plot with free y-axis per facet
+l <- ggplot(summary_df,
+            aes(x = density,
+                y = mean_time,
+                color = algorithm)) +
+  
+  geom_line(size = 1) +
+  geom_point(size = 2) +
+  
+  facet_wrap(~ graph_size, scales = "free_y") +
+  
+  # Force consistent x-axis labels
+  scale_x_continuous(
+    breaks = c(0.1, 0.3, 0.5, 0.7, 0.9, 1.0),
+    labels = c("0.1", "0.3", "0.5", "0.7", "0.9", "1")
+  ) +
+  
+  labs(
+    title = "Average Solve Time vs Density Across Different Graph Sizes",
+    x = "Graph Density",
+    y = "Solve Time (ms)",
+    color = "Algorithm"
+  ) +
+  
+  theme_minimal()
+
+# Save plot
+ggsave(
+  "./plots/solve_time_density.png",
+  plot = l,
+  width = 10,
+  height = 6,
+  dpi = 600
+)
+
+# Print plot
+print(l)
+```
+
+
+
+
+```{r}
+# Summarize: mean + sd per algorithm, density, and graph size
+density_summary_df <- df %>%
+  group_by(n, density, algorithm) %>%
+  summarise(
+    mean_solve = mean(solve_time),
+    sd_solve   = sd(solve_time),
+    .groups    = "drop"
+  )
+
+# Plot: Solve Time vs Density, faceted by graph size
+p_density <- ggplot(density_summary_df, aes(x = density, color = algorithm, fill = algorithm)) +
+  geom_ribbon(aes(ymin = mean_solve - sd_solve,
+                  ymax = mean_solve + sd_solve),
+              alpha = 0.2, color = NA) +
+  geom_line(aes(y = mean_solve), linewidth = 0.8) +
+  geom_point(aes(y = mean_solve), size = 2) +
+  facet_wrap(~ n, labeller = label_both, scales = "free_y") +
+  scale_color_brewer(palette = "Set1", labels = algo_labels) +
+  scale_fill_brewer(palette = "Set1",  labels = algo_labels) +
+  scale_x_continuous(breaks = unique(density_summary_df$density)) +
+  labs(
+    title = "Solve Time by Graph Density",
+    x     = "Density",
+    y     = "Solve Time (s)"
+  ) +
+  base_theme +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+print(p_density)
+```
+

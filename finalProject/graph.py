@@ -4,7 +4,7 @@ from docplex.mp.model import Model
 from collections import deque
 import csv
 import sys
-sys.setrecursionlimit(10000)  # or higher
+sys.setrecursionlimit(20000)  # or higher
 def generate_graph(n, density=0.1, seed=None, cap_range=(1, 20)):
     """
     Generate a directed graph
@@ -220,7 +220,7 @@ def main():
     density = round(random.random(), 1)
     print(density)
     trials = 5
-    graph_sizes = [1000, 2500, 5000] #
+    graph_sizes = [2500, 5000] #
     densities = [0.1, 0.3, 0.5, 0.7, 0.9, 1] 
 
     with open('results2.csv', 'w', newline='') as f:
