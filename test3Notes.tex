@@ -1,0 +1,133 @@
+% Created 2026-04-28 Tue 01:30
+% Intended LaTeX compiler: pdflatex
+\documentclass[11pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{graphicx}
+\usepackage{longtable}
+\usepackage{wrapfig}
+\usepackage{rotating}
+\usepackage[normalem]{ulem}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{capt-of}
+\usepackage{hyperref}
+\setlength{\parindent}{0pt}
+\usepackage[left=0.75in,right=0.75in,top=1in,bottom=1in]{geometry}
+\usepackage{enumitem}
+\setlist[itemize]{itemsep=2pt, topsep=4pt}
+\author{Ben Heinze}
+\date{\today}
+\title{CSCI 532 - Test 3 Notes}
+\hypersetup{
+ pdfauthor={Ben Heinze},
+ pdftitle={CSCI 532 - Test 3 Notes},
+ pdfkeywords={},
+ pdfsubject={},
+ pdfcreator={Emacs 29.3 (Org mode 9.6.15)}, 
+ pdflang={English}}
+\begin{document}
+
+\maketitle
+
+\section{ILPs}
+\label{sec:org7c1cb1c}
+
+\subsection{Relaxing ILPs to LPs to solve them}
+\label{sec:org620df3d}
+
+\textbf{\textbf{Totaly Unimodularity:}} A matrix is totally unimodular if the determinant of \emph{every square submatix} of it is 0, 1, or -1.
+
+If we can prove that all the solutions in the feasible region (region within the constraint boundaries) consists of only integer solutions, then an LP can solve an ILP.
+
+One method of figuring this out is with total unimodularity. If we can show that the constraint coefficient matrix is totally unimodular, we can prove that feasible consists of only integer vertices. If a problem only consists of integer vertices and is non-negative, the solution is guaranteed to be integer, and the LP can solve the ILP.
+
+$\backslash$[
+
+\[ \text{Objective: } max c^T x \text{(Constraint coefficient matrix)} \]
+\[ \text{Subject to: } A x \leq b  \text{( constraint coeficient (A x) and a specific right hand of the problem (b))}  \]
+\[ \text{Subject to: } x \geq 0    \]
+
+Issue is, there's no easy way to test this.
+
+\subsection{The Two Constraints}
+\label{sec:org032452a}
+
+We are only focusing on the constraints, not the objective function.
+
+The two constraints from the bipartite matching ILP are:
+
+
+\[ \sum_{j \in N(i)} x_{ij} \leq 1  \text{, for all i in L  (left/top partition) }\]
+\[ \sum_{i \in N(j)} x_{ij} \leq 1   \text{, for all j in R  (right/bottom partition)} \]
+
+
+\subsection{Stacking Constraints into Matrix Form}
+\label{sec:org0b0e5c9}
+
+When you stack all constraints together, you get:
+
+\begin{description}
+\item[{The \textbf{constraint matrix} (often called \texttt{A})}] the collection of all the
+coefficients on the left hand side — essentially which edges are incident
+to which nodes.
+
+\item[{The \textbf{right hand side vector} (often called \texttt{b})}] the collection of all
+the constants on the right hand side of every constraint.
+\end{description}
+
+Since every constraint has a 1 on the right hand side, the right hand side
+vector \texttt{b} looks like:
+
+\begin{verbatim}
+b = [ 1
+      1
+      1
+      ...
+      1 ]
+\end{verbatim}
+
+One entry of \texttt{1} for \textbf{each node} in the graph.
+
+\subsection{Compact Form}
+\label{sec:org96520d2}
+
+The whole system can be written compactly as \(A x \leq b\)
+
+
+\subsection{Why This Matters (LP Relaxation)}
+\label{sec:org9006c61}
+
+Two conditions are needed to guarantee that the LP relaxation produces
+integer solutions (i.e., removing the integer restriction from the ILP
+does not change the optimal solution):
+
+\begin{enumerate}
+\item The constraint matrix \texttt{A} must be \textbf{totally unimodular (TU)}.
+\item The right hand side vector \texttt{b} must be \textbf{integer valued}.
+\end{enumerate}
+
+For bipartite matching, both conditions hold:
+\begin{itemize}
+\item The constraint matrix has the TU property.
+\item The right hand side vector \texttt{b} is all 1's, which are integers.
+\end{itemize}
+
+Together, these guarantee that the LP relaxation will naturally produce
+integer solutions — the LP solver will never find it beneficial to return
+a fractional value for any x\textsubscript{ij}.
+
+\section{Approximating in question 3}
+\label{sec:org01dfc1e}
+
+We need to relate \(ALG\) to \(OPT\).
+
+\[ \text{Minimization: } ALG \leq \alpha OPT \]
+\[ \text{Maximization: } ALG \geq \frac{1}{\alpha} OPT \]
+
+\begin{itemize}
+\item \(ALG\): Cost (size) of algorithm's solution
+\item \(\alpha\): Approximation ratio
+\item \(OPT\): Cost (size) of optimal solution
+\end{itemize}
+\end{document}

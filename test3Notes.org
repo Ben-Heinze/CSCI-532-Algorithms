@@ -1,0 +1,99 @@
+#+Title: CSCI 532 - Test 3 Notes
+#+Author: Ben Heinze
+#+OPTIONS: toc:nil
+#+STARTUP: noindent
+#+LATEX_HEADER: \setlength{\parindent}{0pt}
+# This is used to shrink the pdf page margins
+#+LATEX_HEADER: \usepackage[left=0.75in,right=0.75in,top=1in,bottom=1in]{geometry}
+
+# This is used to shrink the spacing between bullet points
+#+LATEX_HEADER: \usepackage{enumitem}
+#+LATEX_HEADER: \setlist[itemize]{itemsep=2pt, topsep=4pt}
+
+* ILPs
+
+** Relaxing ILPs to LPs to solve them
+
+**Totaly Unimodularity:** A matrix is totally unimodular if the determinant of /every square submatix/ of it is 0, 1, or -1.
+
+If we can prove that all the solutions in the feasible region (region within the constraint boundaries) consists of only integer solutions, then an LP can solve an ILP.
+
+One method of figuring this out is with total unimodularity. If we can show that the constraint coefficient matrix is totally unimodular, we can prove that feasible consists of only integer vertices. If a problem only consists of integer vertices and is non-negative, the solution is guaranteed to be integer, and the LP can solve the ILP.
+
+\[
+
+\[ \text{Objective: } max c^T x \text{(Constraint coefficient matrix)} \]
+\[ \text{Subject to: } A x \leq b  \text{( constraint coeficient (A x) and a specific right hand of the problem (b))}  \]
+\[ \text{Subject to: } x \geq 0    \]
+
+Issue is, there's no easy way to test this.
+ 
+** The Two Constraints
+ 
+We are only focusing on the constraints, not the objective function.
+ 
+The two constraints from the bipartite matching ILP are:
+ 
+
+\[ \sum_{j \in N(i)} x_{ij} \leq 1  \text{, for all i in L  (left/top partition) }\]
+\[ \sum_{i \in N(j)} x_{ij} \leq 1   \text{, for all j in R  (right/bottom partition)} \]
+ 
+ 
+** Stacking Constraints into Matrix Form
+ 
+When you stack all constraints together, you get:
+ 
+- The *constraint matrix* (often called =A=) :: the collection of all the
+  coefficients on the left hand side — essentially which edges are incident
+  to which nodes.
+ 
+- The *right hand side vector* (often called =b=) :: the collection of all
+  the constants on the right hand side of every constraint.
+ 
+Since every constraint has a 1 on the right hand side, the right hand side
+vector =b= looks like:
+ 
+#+BEGIN_EXAMPLE
+b = [ 1
+      1
+      1
+      ...
+      1 ]
+#+END_EXAMPLE
+ 
+One entry of =1= for *each node* in the graph.
+ 
+** Compact Form
+ 
+The whole system can be written compactly as $A x \leq b$
+
+ 
+** Why This Matters (LP Relaxation)
+ 
+Two conditions are needed to guarantee that the LP relaxation produces
+integer solutions (i.e., removing the integer restriction from the ILP
+does not change the optimal solution):
+ 
+1. The constraint matrix =A= must be *totally unimodular (TU)*.
+2. The right hand side vector =b= must be *integer valued*.
+ 
+For bipartite matching, both conditions hold:
+- The constraint matrix has the TU property.
+- The right hand side vector =b= is all 1's, which are integers.
+ 
+Together, these guarantee that the LP relaxation will naturally produce
+integer solutions — the LP solver will never find it beneficial to return
+a fractional value for any x_ij.
+
+* Approximating in question 3
+
+We need to relate $ALG$ to $OPT$.
+
+\[ \text{Minimization: } ALG \leq \alpha OPT \]
+\[ \text{Maximization: } ALG \geq \frac{1}{\alpha} OPT \]
+
+- $ALG$: Cost (size) of algorithm's solution
+- $\alpha$: Approximation ratio
+- $OPT$: Cost (size) of optimal solution
+
+

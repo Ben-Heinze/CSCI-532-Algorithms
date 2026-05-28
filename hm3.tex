@@ -1,4 +1,4 @@
-% Created 2026-04-26 Sun 19:18
+% Created 2026-04-28 Tue 01:27
 % Intended LaTeX compiler: pdflatex
 \documentclass[11pt]{article}
 \usepackage[utf8]{inputenc}
@@ -32,173 +32,146 @@
 
 
 \section{Problem 1.}
-\label{sec:orge3ba59f}
-
+\label{sec:org0a5b5e8}
 
 The maximum-weight matching problem on a bipartite graph is as follows:
 Given a bipartite graph with edge weights, select the subset of edges with the largest total
 weight such that no edges share a node. Formulate this problem as an ILP.
 
-
 \section{Solution 1}
-\label{sec:org48b7878}
+\label{sec:org3bb22e4}
 
-\(x_{ij} \in \{0,1\} =\) indicates if vertex \(i\) is selected
+\textbf{\textbf{Decision Variables:}} Which edge we choose to select:
 
-Objective: max \(\sum x_{ij}\)
+\[ x_{ij} \in \{0,1\} = \text{ indicates if edge } ij \text{ is selected.} \]
 
-Constraints:
-\begin{itemize}
-\item \(x_{ij} \leq 1\), for each edge \(e = (i,j)\), which is saying that the edge x\textsubscript{ij} can be selected at most, once, which satisfies the restraint that each node can be selected
-\end{itemize}
 
-\noindent\rule{\textwidth}{0.5pt}
+\textbf{\textbf{Objective:}} We want to maximize sum of the edge weights, where edge \(w(i,j)\) is the weight of edge \(e\) between nodes \(i\) and \(j\).
+
+\[ max \sum x_{ij} \cdot w_{ij} \]
+
+\textbf{\textbf{Constraints:}} The nodes connecting edge \(x_{ij}\) can be selected at most, once. To do this, we will constrain the sum of all of node \(x_i\)'s edges to at most 1, then do the same thing for node \(x_j\). Since the graph is bipartite,  we will define this for both the top layer and the bottom layer:
+
+\[ \sum_{j \in neighbor(i)} x_{ij} \leq 1, \text{for all } i \text{ in top layer } \]
+\[ \sum_{i \in neighbor(j)} x_{ij} \leq 1, \text{for all } j \text{ in bottom layer} \]
+
+\newpage
 
 \section{Problem 2.}
-\label{sec:org63fd83b}
+\label{sec:org2204487}
 
 If you remove the integer restriction on variables in the ILP from the previous
 problem, will the resulting LP still find valid optimal solutions to the maximum-weight matching problem on bipartite graphs? Why or why not?
 
 \section{Solution 2.}
-\label{sec:orgcd1c4e5}
+\label{sec:orge9d44b0}
 
-No, the LP will not find the solution because
+If we relax our ILP to an LP, our decision variable's integer restraint is relaxed to contain all real numbers:
+
+
+\[ x_{ij} \in [0,1] = \text{ indicates if edge } ij \text{ is selected.} \]
+
+Now that we've relaxed edges so they can have a value between \(0 \leq x_{ij} \leq 1\)
+
+We can create a matrix \(A\) where the columns are edges \(x_{ij}\) and the rows are nodes.
+
+\(A_{ij} = 1\) if the node in that given row is used for edge \(x_{ij}\)
+The right hand of our constraints will always be integer, which is good for the subject \(A x \leq b\), so \(b\) is always an integer.
 
 
 
-\noindent\rule{\textwidth}{0.5pt}
+We learned in class that the Ghouila-Houri property is linked to the Hoffman-Kruskal theorem for total unimodularity. If a matrix has the Ghouila-Houri property, then it has an integer solution.
 
+\textbf{\textbf{Ghouila-Houri property:}} \(A \in \mathbb{R}^{m \times n}\) is totally unimodular \(\iff\) for every subset of rows \(R\), there is a partition \(R = R_1 \cup R_2\) such that for every column \(j, \sum_{r \in R_1} A_{ij} - \sum_{r \in R_2} A_{ij} \in \{-1, 0, 1 \}\)
+
+To address the Ghouila-Houri property in our constructed \(A\) matrix, we need to show that for each column, which represents an edge \(x_{ij}\), every possible partition of rows \(R = R_1 \cup R_2\), subtracting the total counts from each subset results in a -1, 0, or 1.
+To guarantee that each node is put in a different subset, we construct the partition by using 2-color such that \(R\) is partitioned into \(R_1 = R \cap B\) and \(R_2 = R \cap G\). By alternating the generations of vertices into a blue set \(B\) and a green set \(G\), each column will have exactly two 1's, where one node is from \(R_1\) (\(B\)) and the other is from \(R_2\) (\(G\)). This is guaranteed to work since the graph is bipartite.
+
+\begin{itemize}
+\item Case 1: \(R_1 = 0, R_2 = 0 \rightarrow 0 - 0 = 0\)
+\item Case 2: \(R_1 = 0, R_2 = 1 \rightarrow 0 - 1 = -1\)
+\item Case 3: \(R_1 = 1, R_2 = 0 \rightarrow 1 - 0 = 1\)
+\item Case 4: \(R_1 = 1, R_2 = 1 \rightarrow 1 - 1 = 0\)
+\end{itemize}
+
+Every case is proves each result is either a -1, 0, or 1, this shows our matrix \(A\) has the Ghoula-Houri property, and therefore has total unimodularity. Since \(A\) is totally unimodular and the right hand side of our constraints (vector \(b\)) is integer valued, the optimal solution is also integer.
+
+\newpage
 
 \section{Problem 3.}
-\label{sec:org5041493}
+\label{sec:orgb1c4d71}
 
 Suppose we have \(n\) tasks we want completed and \(w\) identical workers who can complete them. Each task has a time \(t_i\) it takes a worker to complete. Let \(A_w\) denote the tasks assigned to worker \(w\). This means that worker \(w\)'s work time will be \(T_w = \sum_{i \in A_w} t_i\). The goal is to assign all tasks to workers in such a way as to minimize the work time of the worker with the largest work time. I.e., minimize \(\text{max}_w T_w\).
 
-Consider the following algorithm: For each task (in arbitrary order), assign the task to the worker who currently has the smallest work time (smallest current \(T_w\)). Show that this algorithm is a 2-approximation algorithm.
+Consider the following algorithm:
 
-Hint: First show that \(\frac{1}{w} \sum_i t_i \leq OPT\), then consider the last taslk assigned to the worker responsible for the algorithm's cost. Why was that task assigned to that worker?
+\textbf{\emph{For each task (in arbitrary order), assign the task to the worker who currently has the smallest work time (smallest current \(T_w\)).}}
+
+Show that this algorithm is a 2-approximation algorithm.
+
+Hint: First show that \(\frac{1}{w} \sum_i t_i \leq OPT\), then consider the last task assigned to the worker responsible for the algorithm's cost. Why was that task assigned to that worker?
 
 \section{Solution 3.}
-\label{sec:orge939459}
+\label{sec:org807d160}
 
-continue;
+Our algorithm distributes tasks to each worker. No matter how tasks are assigned, the busiest worker must do at least the average amount of work:
+\[ \frac{1}{w} \sum_{i} t_i \leq OPT \]
 
+Now that we've shown this inequality for the average worker, we need to consider the last task assigned to the worker responsible for the algorithm's cost. This task was assigned to the worker because he had the smallest work time.
 
+The busiest worker in the optimal solution is required to work at least \(t_i\) because every task must be assigned to someone, whoever receives task \(i\) works at least \(t_i\) 
 
-\noindent\rule{\textwidth}{0.5pt}
+\[t_i \leq OPT \]
 
+Before the smallest-timed worker \(T_w_{smallest}\) was assigned the last task \$t\textsubscript{last}, his load was at most average:
+
+\[ T_w_{smallest} - t_{last} \leq \frac{1}{w} \sum_{i} t_i \leq OPT \]
+
+We now have upper bounds on two pieces: \((T_{w_{smallest}} - t_{last})\) and \(t_{last}\).
+
+Since \(T_{w_{smallest}}\) is just those two pieces added together, we can bound the total:
+
+\[ T_{w_{smallest}} = (T_{w_{smallest}} - t_{last}) + t_{last} \leq OPT + OPT = 2 \cdot OPT \]
+
+Therefore the algorithm is a 2-approximation.
+
+\newpage
 
 \section{Problem 4.}
-\label{sec:org51ad5da}
+\label{sec:org8150687}
 
 Consider the following algorithm for the Knapsack problem discussed in class: For each item, calculate its value to weight ratio and greedily fill the knapsack with the highest valued item at each iteration. What is the approximation ratio for this algorithm? Explain why that is the case.
 
+
+
 \section{Solution 4.}
-\label{sec:orga7c7d5e}
+\label{sec:orgc537194}
 
-The greedy algorithm for the knapsack problem would be to choose the largest-valued item, and put it in the sack. If the largest-valued item weighs more than the capacity of the backpack, choose the next highest-valued item.
 
-To approximate the ratio for this algorithm, we must find a connection between our algorthm (\(ALG\)), and the optimal agorithm (\(OPT\)). This problem is a maximizing the value, so the formula we will use is:
-
-\begin{verbatim}
-Find highest-valued item, and see if it fits in the knapsack
-If the item fits in the knapsack, add it, if not, choose the next highest item
-Loop until there are no more items to fit in the knapsack.
-\end{verbatim}
-
-\[  ALG  \geq \frac{1}{\alpha} OPT \]
-
-Where \(\alpha\) is the approximation ratio.
+To find the best constant for \(\alpha\), we can create two items for the knapsack problem, where the knapsack has a weight capacity of 1:
 
 \begin{itemize}
-\item Let \(ALG\) be the set of items selected by the algorithm
-
-\item Let \(OPT\) be the set of items selected in the optimal solution
-
-We need to bound the minimal number of sets in ALG by bounding the minimum number of iterations.
+\item Item A: weight = \(\epsilon\), value = \(2 \epsilon\), where \(0 < \epsilon < 1\).
+\item Item B: weight = 1, value = 1.
 \end{itemize}
 
-In the first set, we want to choose the highest valued item
+The greedy ALG will always choose item A first because we constructed item A to always have a higher value:weight ratio, and item B will always be optimal. The greedy algorithm can never fit both items because the knapsack's weight capacity is 1 and item B's weight is 1. 
 
-\[ ? \geq | \text{ max valued item } |  \geq ?  \]
+As we shrink \(\epsilon\)'s value towards 0, the approximation ratio \(\frac{ALG}{OPT}\) gets arbitrarily bad:
 
-We are guaranteed to do at least as good as our lower bound, and guaranteed we won't do better than our upper bound
+\[\frac{v_{ALG}}{v_{OPT}} =  \frac{2\epsilon}{1}, \epsilon \text{ approaches zero.}\]
 
-What can we say about our first selected item? It's the biggest!
-
-\[ \text{Claim:} \frac{n}{OPT} \leq |\text{ biggest set}| \]
-
-
-\noindent\rule{\textwidth}{0.5pt}
-
-\section{Problem 5.}
-\label{sec:orgb35b536}
-
-Consider the following algorithm for the Knapsack problem discussed in class: Select the best of:
-\begin{enumerate}
-\item The output from the algorithm in problem 4.
-
-\item The single higest-valued item (whose weight is below the threshold).
-\end{enumerate}
-
-What is the approximation ratio for this algorithm? Explan why that is the case.
-
-Hint: Consider what would happen if we were allowed to take fractional amounts of the items.
-
-\section{Solution 5.}
-\label{sec:orgb709569}
-
-continue;
-
-\noindent\rule{\textwidth}{0.5pt}
-
-
-\section{Problem 6.}
-\label{sec:org89aebe5}
-
-Consider this variation of the classic Set Cover problem: Suppose we have a universe of elements \(U\) and collection of sets \(S\) where each set \(S_i \in S\) has a non-negative cost \(c_i\) associated with it. Also suppose that each element in the universe appears in at most \(d\) sets (fixed value not dependent on which element from the universe). The goal is to select the least cost subset of \(S\) such that the cost of the selected subset is minimized, but that each element of \(U\) is in a selected set.
-
-Formulate this problem as an ILP, relax the ILP, then perform a deterministic rounding procedure to find an approximation algorithm. Describe the algorithm and prove that it is a \$d\$-approximation algorithm.
-
-\section{Solution 6.}
-\label{sec:orge9a07ab}
-
-Continue;
-
-
-\noindent\rule{\textwidth}{0.5pt}
-
-\section{Problem 7.}
-\label{sec:org2676328}
-
-The Max Cut problem is as follows: given an undirected graph \(G = (V,E)\) with non-negative edge weights, find a cut \((A, B)\) such that the sum of the edge weights that cross the cut is maximized.
-
-Consider the following randomized algorithm for Max Cut: Assign vertex \(v\) to a set \(A\) with probability \frac{1}{2}. Let \(B = V \textbackslash A\).
-
-Show that this algorithm is a \$\frac{1}{2}-approximation algorithm.
-
-
-\section{Soltuion 7.}
-\label{sec:orgb171105}
-
-Continue;
+No matter what constant we assign \(\alpha\), there will always be an \(\epsilon\) that breaks it, meaning the approximation ratio is unbounded. 
 
 
 
-\noindent\rule{\textwidth}{0.5pt}
 
 
 
-\section{Problem 8.}
-\label{sec:orgc1d91bc}
+\section{Solution 9.}
+\label{sec:org9b6c92b}
 
-The Minimum Dominating Set problem is: Given a graph, find the smallest subset of the vertices such that each remaining vertex has a neighbor in the selected subset. Find an approximation algorithm for the Minimum Dominating Set problem.
-
-Hint: Draw it out and see if it seems similar to a problem we studied in class).
-
-\section{Solution 8.}
-\label{sec:org7f25b32}
-
-Continue;
+\begin{center}
+\includegraphics[width=.9\linewidth]{eval.png}
+\end{center}
 \end{document}

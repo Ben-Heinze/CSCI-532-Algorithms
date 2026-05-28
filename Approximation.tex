@@ -1,4 +1,4 @@
-% Created 2026-04-23 Thu 13:30
+% Created 2026-04-28 Tue 12:55
 % Intended LaTeX compiler: pdflatex
 \documentclass[11pt]{article}
 \usepackage[utf8]{inputenc}
@@ -33,7 +33,7 @@
 
 
 \section{NP-Complete}
-\label{sec:org9824bf6}
+\label{sec:orgede471f}
 
 Techniques to hand NP Compelte
 \begin{itemize}
@@ -44,7 +44,7 @@ Techniques to hand NP Compelte
 \end{itemize}
 
 \section{Approximation Algorithms}
-\label{sec:org98b8b0b}
+\label{sec:org82e08b3}
 
 \(ALG \leq \alpha OPT\)
 
@@ -58,7 +58,7 @@ Techniques to hand NP Compelte
 If problem is a maximization problem, \(ALG \geq \frac{1}{\alpha} OPT\)
 
 \subsection{Simple Example:}
-\label{sec:orgf255d4b}
+\label{sec:orgf9f6a07}
 Suppose I know my algorithm is a 1.12-approximation algorithm (\(\alpha=1.12\)). Suppose my algorithm returns a solution of cost=746.125. Then, we know that \(756.125 \leq 1.12 OPT\).
 
 \(\Longrightarrow \frac{746.125}{1.12} = 666.183 \leq OPT \leq 746.125\)
@@ -67,7 +67,7 @@ The will give us a guaranteed upper and lower bound of where OPT should be. Then
 
 
 \subsection{Vertex Cover}
-\label{sec:org8722bf5}
+\label{sec:org0e5a726}
 
 VC: given graph, find smallest subset of vertices such that everye edge in the graph has at least one vertex in the subset. 
 
@@ -98,7 +98,7 @@ Two ways to get a better approximation:
 
 
 \subsubsection{Hierarchies:}
-\label{sec:org6258a9b}
+\label{sec:org3e9b6fe}
 Show the Computibility Hierarchy
 
 Approximability Hierarchy
@@ -126,7 +126,7 @@ Approximability Hierarchy
 
 APX: optimization problems that can be approximated within a constant ratio
 \subsection{Set Cover}
-\label{sec:orgf92927c}
+\label{sec:orgf5aef67}
 
 Set Cover: Given a set of elements (universe), and sets containing those elements, find the smallest number of sets so that every element of the universe is included.
 
@@ -144,7 +144,7 @@ While element of universe is not included
 \end{verbatim}
 
 \subsubsection{Solving Set Cover}
-\label{sec:orgaa6ddfc}
+\label{sec:org58227d1}
 
 Suppose the universe contains \emph{n} elements:
 
@@ -217,12 +217,12 @@ What value of \(t\) makes \(n_t < 1\):
 \textbf{\textbf{It turns out that Set Cover cannot be approximated within the bound of \((1- o(1)) ln(n)\), unless P = NP}}
 
 \section{Knapsack problem}
-\label{sec:orgee98a9f}
+\label{sec:orgab2da6b}
 
 Knapsack: given a set of \(n\) items with values \(v_1, \ldots, v_n\) and weights \(w_1, \ldots, w_n\), select the most valuable combination with \(\text{total weight} \leq W\)
 
 \subsection{DP method}
-\label{sec:org25a8989}
+\label{sec:orgde1c9af}
 
 How could we approach this? \textbf{\textbf{Dynamic programming sense?}}
 
@@ -246,7 +246,7 @@ If you make a table with items as the rows and total weights as the columns for 
 Instead, we need to compromise value accuracy isntead of weights.
 
 \subsubsection{Values instead of weights}
-\label{sec:org2e10edd}
+\label{sec:orgedd883e}
 
 Instead of saying "for a given weight, how much value can we get?" to "given a value threshold, whats the smallest weight i can get?"
 
@@ -334,18 +334,18 @@ We can solve Knapsack instances arbitrarily close to optimal in polynomial time!
 
 
 \section{Randomization}
-\label{sec:orgc4e2a8f}
+\label{sec:orgfe7e653}
 
 
 \subsection{Graph Coloring}
-\label{sec:org409ea09}
+\label{sec:orgb979f17}
 
 Family of graph problems that involve coloring vertices (or edges) subject to various constraints.
 
 \textbf{\textbf{Minimum Vertex Coloring:}} Color the vertices of a graph useing the smallest number of colors so adjacent vertices are diffreent colors. This is NP-hard.
 
 \subsubsection{Max 3-Coloring}
-\label{sec:org3abbbcc}
+\label{sec:org4336505}
 
 An edge in a graph is \emph{satisfied} if its nodes are colored different colors. Using only three colors, color the nodes of a graph such that the number of satisfied edges is maximized.
 
@@ -384,7 +384,7 @@ How many edges we expect to satisfiy, and we can relate this to OPT (Since \(OPT
 
 
 \subsection{SAT \& 3-SAT}
-\label{sec:org61b09d6}
+\label{sec:org684810f}
 
 \[ \phi = (x_1 \vee x_1 \vee x_2) \wedge (\overline{x_1} \vee \overline{x_2} \vee \overline{x_2}) \wedge (\overline{x_1} \vee x_1 \vee x_2) \]
 
@@ -409,7 +409,7 @@ SAT = \{<\(\phi\)>: \(\phi\) is a satisfieable formula \}
 
 
 \subsection{Max 3-SAT}
-\label{sec:orgf08811b}
+\label{sec:org9486542}
 
 \textbf{\textbf{Max 3-SAT Problem:}} Given a 3-SAT instance (with unique variables in each clause), set variable values so that the number of satisfied clauses is maximized.
 
@@ -435,10 +435,10 @@ Number of clauses we expect:
 
 
 \subsection{ILP-Based Approximation}
-\label{sec:org73e5c36}
+\label{sec:org449b4e5}
 
 \subsubsection{Vertex Cover ILP}
-\label{sec:orged8ba0c}
+\label{sec:org0451e03}
 
 He defines VC again, then shows the ILP for it. We can change the ILP (NP) to an LP (P), then say that our P solution isn't that far off from the NP solution. He has the \ldots{} \textbf{\textbf{Check lecture for this part}}
 
@@ -466,10 +466,10 @@ What is the relationship between ALG and OPT?
 \textbf{\textbf{What is preventing us from making the 1/2 fraction higher?}}
 
 \section{Randomized Rounding}
-\label{sec:org9c1b46e}
+\label{sec:orgec8e417}
 
 \subsection{Set Cover}
-\label{sec:org01e992f}
+\label{sec:orge152a4d}
 
 If you don't know the goal, look it up.
 
@@ -590,4 +590,31 @@ The more we run it, the more likely the algorithm will work. This is a tradeoff.
 We have a high likelihood of a good solution with guaranteed polynomial run time.
 
 Can put our uncertainty onto running time instead of "goodness"? Yes!.
+
+
+\section{Test stuff}
+\label{sec:orgb128137}
+
+Three questions plus 10 points. EVERYTHING IS ON THE HOMEWORK
+
+\begin{enumerate}
+\item Easy Approximation Algorithm (5 points).
+very straight forward doing something youve already seen. No good excuse for missing question 1 (potentially multiple times). Fully expect everyone to get the first question. should be very quick. We need to prove everything abou it. We are proving approximation ratios. There could be ILP, but nothing involving total unimodularity
+\item Conceptual Question (3 points)
+Relates to approximation algorithms in general. Why cant we do this, what happens if we do this, not proving anything.
+\item Hard Approximation Algorithm (2 points).
+A series of hints to walk you through how to do it.
+\item Bonus (1) dont spend time on it.
+\end{enumerate}
+
+
+\section{Going through some homework problems}
+\label{sec:org24800c1}
+
+\subsection{Work scheduling}
+\label{sec:org3a95d44}
+
+Given a set of n tasks and W identical workers, assign all takss such that the longest worker time is minimuzed
+
+No question in the test will ask for a counter example(nothing like problem 4 on the test)
 \end{document}

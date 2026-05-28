@@ -1,0 +1,25 @@
+#+Title: CSCI 532 - Test 3 Notes
+#+Author: Ben Heinze
+#+OPTIONS: toc:nil
+#+STARTUP: noindent
+#+LATEX_HEADER: \setlength{\parindent}{0pt}
+# This is used to shrink the pdf page margins
+#+LATEX_HEADER: \usepackage[left=0.75in,right=0.75in,top=1in,bottom=1in]{geometry}
+
+# This is used to shrink the spacing between bullet points
+#+LATEX_HEADER: \usepackage{enumitem}
+#+LATEX_HEADER: \setlist[itemize]{itemsep=2pt, topsep=4pt}
+
+* ILPs
+
+** Relaxing ILPs to LPs to solve them
+
+If we can prove that all the solutions in the feasible region (region within the constraint boundaries) consists of only integer solutions, then an LP can solve an ILP.
+
+One method of figuring this out is with total unimodularity. If we can show that the constraint coefficient matrix is totally unimodular, we can prove that feasible consists of only integer vertices. If a problem only consists of integer vertices and is non-negative, the solution is guaranteed to be integer, and the LP can solve the ILP.
+
+\[
+
+\[ \text{Objective: } max c^T x \text{(Constraint coefficient matrix)} \]
+\[ \text{Subject to: } A x \leq b  \text{( constraint coeficient (A x) and a specific right hand of the problem (b))}  \]
+\[ \text{Subject to: } x \geq 0    \]

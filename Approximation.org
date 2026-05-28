@@ -492,3 +492,25 @@ The more we run it, the more likely the algorithm will work. This is a tradeoff.
 We have a high likelihood of a good solution with guaranteed polynomial run time.
 
 Can put our uncertainty onto running time instead of "goodness"? Yes!.
+
+
+* Test stuff
+
+Three questions plus 10 points. EVERYTHING IS ON THE HOMEWORK
+
+1. Easy Approximation Algorithm (5 points).
+   very straight forward doing something youve already seen. No good excuse for missing question 1 (potentially multiple times). Fully expect everyone to get the first question. should be very quick. We need to prove everything abou it. We are proving approximation ratios. There could be ILP, but nothing involving total unimodularity
+2. Conceptual Question (3 points)
+   Relates to approximation algorithms in general. Why cant we do this, what happens if we do this, not proving anything. 
+3. Hard Approximation Algorithm (2 points).
+   A series of hints to walk you through how to do it. 
+4. Bonus (1) dont spend time on it.
+
+
+* Going through some homework problems
+
+** Work scheduling
+
+Given a set of n tasks and W identical workers, assign all takss such that the longest worker time is minimuzed
+
+No question in the test will ask for a counter example(nothing like problem 4 on the test)
