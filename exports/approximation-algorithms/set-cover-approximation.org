@@ -1,0 +1,76 @@
+#+TITLE: Set Cover — Greedy $\ln n$-Approximation
+#+OPTIONS: toc:nil num:nil
+
+*Set Cover.* Given a /universe/ of elements and a collection of sets
+containing those elements, find the smallest number of sets whose
+union covers every element of the universe.
+
+Example:
+- $U = \{1, 4, 7, 8, 10\}$.
+- $S = \{ \{1, 7, 8\},\; \{1, 4, 7\},\; \{8, 4, 7\},\; \{4, 8, 10\} \}$.
+
+* Greedy algorithm
+
+#+BEGIN_SRC text
+While some element of the universe is not covered:
+  select the set with the largest number of uncovered elements
+#+END_SRC
+
+* Approximation ratio
+
+Suppose the universe contains $n$ elements. We want to bound the
+number of sets the algorithm picks (that's $ALG$) by bounding the
+number of iterations, which we do by bounding how many uncovered
+elements the algorithm removes per iteration.
+
+** First iteration
+
+The first set is the largest set overall.
+
+*Claim.* $|\text{biggest set}| \geq n / OPT$.
+
+*Proof.* Suppose $|\text{biggest set}| < n / OPT$. Then every set has
+fewer than $n / OPT$ elements, so any $OPT$ sets together cover fewer
+than $OPT \cdot (n / OPT) = n$ elements — but the optimal cover, by
+definition, must cover all $n$. Contradiction.
+
+So after the first iteration, the number of remaining uncovered
+elements is at most
+\[
+n_1 \leq n - \frac{n}{OPT} = n \left(1 - \frac{1}{OPT}\right).
+\]
+
+** Later iterations
+
+At iteration $t$ the same logic applies to the remaining sub-problem:
+whatever's uncovered can still be covered by (at most) $OPT$ sets, so
+the largest remaining set covers at least $n_{t-1} / OPT$ elements.
+
+In general, after $t$ iterations,
+
+\[
+n_t \leq n_{t-1} \left(1 - \frac{1}{OPT}\right)
+      \leq \ldots
+      \leq n \left(1 - \frac{1}{OPT}\right)^t.
+\]
+
+** Bounding $t$ (i.e., $ALG$)
+
+The algorithm stops when $n_t < 1$ (nothing left to cover). Solving
+
+\[
+n \left(1 - \frac{1}{OPT}\right)^t < 1
+\]
+
+for $t$ and using $(1 - 1/x) \leq e^{-1/x}$ gives $t \leq OPT \ln n$,
+so:
+
+\[
+ALG \leq \ln(n) \cdot OPT.
+\]
+
+* Optimality of this bound
+
+Set Cover cannot be approximated within a ratio better than
+$(1 - o(1)) \ln n$ unless $P = NP$. So the greedy algorithm is, up to
+constants, the best we can do.

@@ -1,0 +1,67 @@
+#+TITLE: Closest Pair of Points
+#+OPTIONS: toc:nil num:nil
+
+*Goal.* Given $n$ points in the plane, find a pair of points with
+minimum distance.
+
+* Brute force
+
+Compute the distance for every pair and take the smallest. Running time
+$O(n^2)$.
+
+* Divide and conquer
+
+Sort points by $x$-coordinate and split at the median into a left half
+and a right half.
+
+- *Divide.* Split at the median line $L$.
+- *Conquer.* Recursively find the closest pair on each side; let
+  $d_{\text{left}}$ and $d_{\text{right}}$ be their distances.
+- *Combine.* Set $\delta = \min(d_{\text{left}}, d_{\text{right}})$.
+  The overall closest pair either lies entirely in one half (already
+  found), or straddles $L$ — but then both points are within horizontal
+  distance $\delta$ of $L$.
+
+** The straddle strip
+
+Let $S$ be the set of points within horizontal distance $\delta$ of the
+splitting line $L$. In the worst case $|S|$ is not smaller than the
+input, so naively comparing all pairs in $S$ doesn't help.
+
+*Key observation.* Overlay $S$ with a grid of $\delta/2 \times \delta/2$
+cells. Because every point on the left side is at least $\delta$ from
+every other point on the left side (that was our recursive guarantee),
+and likewise on the right, each cell holds at most one point.
+
+Sort $S$ by $y$-coordinate and, for each point, only compare against
+the next 11 points in the $y$-sorted list — 11 is the maximum number of
+grid cells that could contain a point closer than $\delta$ to the
+current one. (The grid isn't materialized in code; it's just the
+argument that bounds the number of comparisons.)
+
+* Algorithm
+
+#+BEGIN_SRC text
+findClosestPair(P):
+  sort points by x-coord, find L, make P_left and P_right      O(n log n)
+  compute d_left and d_right recursively                       O(?)
+  let delta = min(d_left, d_right)                             O(1)
+  let S be the straddle points within delta of L               O(n)
+  sort S by y-coord                                            O(n log n)
+  compare each point in S with the next 11 y-neighbors,        O(n)
+    updating delta as needed
+  return delta                                                 O(1)
+#+END_SRC
+
+* Analysis
+
+*Validity.* If a closer pair existed, it would have been found either
+inside the left recursive call, inside the right recursive call, or as
+a straddle pair — the algorithm exhausts all three cases.
+
+*Running time — as written.* $O(n \log^2 n)$. The sort in the combine
+step happens at every recursion level, adding a factor of $\log n$.
+
+*Running time — with pre-sorting.* $O(n \log n)$. Sort the $x$- and
+$y$-coordinates once up front. Each recursive call can then extract
+its sorted sub-lists in linear time, eliminating the extra $\log n$.

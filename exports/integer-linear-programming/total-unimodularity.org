@@ -1,0 +1,71 @@
+#+TITLE: Total Unimodularity
+#+OPTIONS: toc:nil num:nil
+
+*Total Unimodularity.* A matrix is *totally unimodular* if the
+determinant of every square submatrix is $0$, $1$, or $-1$.
+
+Consequences:
+
+- Totally unimodular matrices are made of entries in $\{-1, 0, 1\}$
+  (since single entries are $1 \times 1$ submatrices).
+- If $A$ is totally unimodular, so is $A^T$ (determinants are
+  invariant under transpose).
+
+* Why we care: Hoffman-Kruskal
+
+*Theorem (Hoffman-Kruskal, 1956).*
+$A \in \mathbb{R}^{m \times n}$ is totally unimodular
+$\iff$ for every integer vector $b \in \mathbb{Z}^m$, the feasible region
+$\{x \in \mathbb{R}^n \mid A x \leq b,\; x \geq 0\}$ has integer
+vertices.
+
+Applied to an LP with objective $\max\; c^T x$ subject to
+$A x \leq b$, $x \geq 0$: if $A$ is totally unimodular and $b$ is
+integer, then the LP optimum sits at an integer vertex, so an LP
+solver produces the ILP answer directly — in polynomial time.
+
+* Testing for total unimodularity: Ghouila-Houri
+
+For a long time there was no fast way to check total unimodularity
+until Ghouila-Houri's theorem in 1962.
+
+*Theorem (Ghouila-Houri, 1962).* $A \in \mathbb{R}^{m \times n}$ is
+totally unimodular $\iff$ for every subset of rows $R$, there is a
+partition $R = R_1 \cup R_2$ such that for every column $j$,
+\[
+\sum_{i \in R_1} A_{ij} - \sum_{i \in R_2} A_{ij} \in \{-1, 0, 1\}.
+\]
+
+The two theorems together give a workable recipe: prove the constraint
+matrix satisfies Ghouila-Houri's condition, and Hoffman-Kruskal
+guarantees the LP relaxation has integer optima.
+
+* Two-sided constraints
+
+We're only ever interested in constraints, not the objective. Recall
+the bipartite matching ILP (see [[../approximation-algorithms/vertex-cover-approximation][vertex cover]]/matching), whose two
+families of constraints are:
+
+\[
+\sum_{j \in N(i)} x_{ij} \leq 1 \quad \text{for all } i \in L
+\]
+\[
+\sum_{i \in N(j)} x_{ij} \leq 1 \quad \text{for all } j \in R
+\]
+
+Stacked into matrix form, the /constraint matrix/ $A$ has a row per
+node and a column per edge; entry $A_{ij}$ is $1$ if node $i$ is
+incident to edge $j$. The right-hand side is $b = (1, 1, \ldots, 1)^T$,
+one entry per node.
+
+* Compact form and why it matters
+
+The whole system is $A x \leq b$. Two conditions guarantee that the LP
+relaxation produces an integer solution:
+
+1. $A$ is totally unimodular.
+2. $b$ is integer-valued.
+
+For bipartite matching both hold: $A$ has the TU property, and $b$ is
+all $1$s. The LP solver will never find it beneficial to return a
+fractional $x_{ij}$.

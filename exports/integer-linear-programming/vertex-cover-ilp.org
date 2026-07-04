@@ -1,0 +1,70 @@
+#+TITLE: Vertex Cover as an ILP
+#+OPTIONS: toc:nil num:nil
+
+*Vertex Cover ILP.*
+
+- $x_i \in \{0, 1\}$ — indicates whether vertex $i$ is selected.
+- *Objective:* $\min \sum_i x_i$.
+- *Subject to:* $x_i + x_j \geq 1$ for each edge $e = (i, j)$;
+  $x \geq 0$.
+
+* Setting up for Ghouila-Houri
+
+To apply [[total-unimodularity][Ghouila-Houri]], we need constraints of the form $A x \leq b$
+with the right column structure. Two adjustments:
+
+- Flip the constraint direction (multiply through by $-1$, or work
+  with the equivalent maximization form). The relevant matrix has one
+  row per edge and one column per vertex.
+- Transpose: we want a guaranteed /column/ structure (two entries per
+  column, one per endpoint of an edge), so we work with $A^T$, which
+  has one row per vertex and one column per edge.
+
+* The bipartite / tree case
+
+We need to exhibit a partition $R = R_1 \cup R_2$ of the rows (i.e.,
+vertices) such that for every column (edge), the two endpoints fall
+into different parts, making the column sum-difference land in
+$\{-1, 0, 1\}$.
+
+*Trees and bipartite graphs.* Two-color the vertices by alternating
+generations: label the levels of the tree (or the two sides of the
+bipartite graph) $B$ and $G$. Every edge crosses between $B$ and $G$
+by construction — if two vertices sharing an edge were the same color,
+that edge would span within a generation, which contradicts the tree
+structure (a cycle) or bipartiteness.
+
+Given any subset of rows $R$, partition it as
+$R_1 = R \cap B$ and $R_2 = R \cap G$.
+
+For any column (edge $e$),
+\[
+\sum_{v \in R_1} A_{ve} \in \{0, 1\}
+\quad\text{and}\quad
+\sum_{v \in R_2} A_{ve} \in \{0, 1\},
+\]
+so their difference is in $\{-1, 0, 1\}$.
+
+Ghouila-Houri applies, and Hoffman-Kruskal guarantees the LP has
+integer vertices. *Vertex cover on a tree (and any bipartite graph)
+can be solved in polynomial time via the LP relaxation.*
+
+* Why it fails on general graphs
+
+Consider a small graph with an odd cycle (e.g. a triangle plus a
+pendant). The lecture works through a specific $A^T$ where the only
+two candidate partitions of some 3-row subset produce column sums of
+$-2$ or $+2$ — outside $\{-1, 0, 1\}$.
+
+Concretely, if we look at rows $\{x_1, x_2, x_4\}$:
+
+- $R_1 = \{x_1, x_4\}$, $R_2 = \{x_2\}$ → column $e_2$ sums to $2$.
+- $R_1 = \{x_1\}$, $R_2 = \{x_2, x_4\}$ → column $e_4$ sums to $-2$.
+
+No valid partition exists, so $A^T$ (hence $A$) is not totally
+unimodular. *Vertex Cover on general graphs is not solvable via a
+plain LP relaxation.* Odd cycles are the reason bipartiteness (or
+tree-ness) matters.
+
+For general graphs we fall back to approximation — see the
+[[../approximation-algorithms/ilp-vertex-cover-approximation][ILP-based approximation]] for Vertex Cover.

@@ -1,0 +1,55 @@
+#+TITLE: Flow Networks
+#+OPTIONS: toc:2 num:nil
+
+*Motivation.* Imagine a directed graph representing an oil pipeline
+network. Edge weights represent pipe capacities. How much oil can we
+transfer from source $s$ to sink $t$?
+
+- $s$ generates the oil.
+- $t$ is where the oil goes.
+
+The edge weights bound how much oil each pipe can carry. But the actual
+amount arriving at an edge is limited by whatever the upstream pipes
+can deliver.
+
+* Definition
+
+A *flow network* is:
+
+- A directed graph $G = (V, E)$.
+- A finite, positive edge capacity $c_e$ for every edge.
+- A single source $s$ with no incoming edges.
+- A single sink $t$ with no outgoing edges.
+
+An *s-t flow* is a function $f : E \to \mathbb{R}_{\geq 0}$ satisfying:
+
+- *Capacity constraint.* $0 \leq f(e) \leq c_e$ for every edge $e$.
+- *Conservation of flow.* For every node other than $s$ and $t$, total
+  incoming flow equals total outgoing flow — "what goes into a node has
+  to come out."
+
+* Maximum Flow Problem
+
+Given a flow network, find the maximum possible value of an $s$-$t$
+flow.
+
+** A first idea: push bottleneck
+
+- Select an $s$-$t$ path $P$.
+- Push only the minimum capacity of any edge along $P$ (the
+  /bottleneck(P)/).
+- Compute the residual graph $G_f$ (capacity network $G$ minus flow $f$).
+- Repeat with any path that still exists in $G_f$.
+
+This is not optimal — sometimes we need to /reroute/ existing flow to
+open up better paths. That's what the residual graph enables.
+
+#+INCLUDE: "ford-fulkerson.org" :minlevel 2
+#+INCLUDE: "min-cut-max-flow.org" :minlevel 2
+#+INCLUDE: "work-scheduling-flow.org" :minlevel 2
+
+* Working assumptions after all this
+
+- We can find optimal, valid flows for a flow network.
+- If capacities are integer-valued, the max flow we find is also
+  integer-valued.

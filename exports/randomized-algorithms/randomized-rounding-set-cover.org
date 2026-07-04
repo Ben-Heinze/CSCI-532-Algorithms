@@ -1,0 +1,130 @@
+#+TITLE: Randomized Rounding — Set Cover
+#+OPTIONS: toc:nil num:nil
+
+We want an approximation algorithm for [[../approximation-algorithms/set-cover-approximation][Set Cover]] via LP relaxation.
+The deterministic $1/2$-threshold rounding that works for Vertex Cover
+does /not/ work here: an element can appear in many sets, and if all
+its sets have $x_s^{LP}$ just below $1/2$, deterministic rounding
+misses it. Instead we round /randomly/.
+
+* Setup
+
+*ILP.*
+- Decision variables: $x_s \in \{0, 1\}$ — is set $s$ selected?
+- Objective: minimize the number of selected sets.
+- Constraints: every element $u$ of the universe is in at least one
+  selected set: $\sum_{s \ni u} x_s \geq 1$ for every element $u$.
+
+*Relax:* $0 \leq x_s \leq 1$ for each set $s$.
+
+* Algorithm (one-shot)
+
+Solve the LP. Interpret each optimal $x_s^*$ as a probability: add set
+$s$ to $S_{ALG}$ with probability $x_s^*$, independently.
+
+*Concerns.*
+- Validity isn't guaranteed — some element may end up uncovered. We
+  can re-run for a better chance, but the running time then becomes
+  uncertain.
+- We must decide where to place the uncertainty: on validity, on
+  approximation ratio, or on running time.
+
+* Expected size and validity — one-shot analysis
+
+** Size
+
+Let $X_s = 1$ if set $s$ is selected. Then
+
+\[
+E[|S_{ALG}|] = \sum_s E[X_s] = \sum_s x_s^* = OPT_{LP} \leq OPT.
+\]
+
+So the expected size is at most $OPT$. On its own, that would be too
+good to be true — and it is: the trade-off is that validity is not
+guaranteed.
+
+** Validity
+
+Fix an element $u$. Let $S_u = \{s \in S : u \in s\}$. Element $u$ is
+covered iff at least one set in $S_u$ is selected, i.e.,
+$\sum_{s \in S_u} X_s \geq 1$. The probability $u$ is /not/ covered
+is:
+
+\[
+\Pr[u \text{ uncovered}] = \prod_{s \in S_u} (1 - x_s^*)
+\leq e^{-\sum_{s \in S_u} x_s^*}
+\leq e^{-1} \approx 0.37,
+\]
+
+using $1 - x \leq e^{-x}$ and the LP constraint
+$\sum_{s \in S_u} x_s^* \geq 1$.
+
+*Summary.* Every /individual/ element is covered with probability
+$\geq 1 - 1/e \approx 0.63$, but the /joint/ probability that all $n$
+elements are covered is much smaller — one shot is very unlikely to
+produce a valid cover.
+
+* Algorithm (boosted)
+
+Repeat the one-shot process $T$ times, accumulating selected sets into
+$S_{ALG}$ across all rounds (don't restart from scratch each time —
+grow the collection).
+
+For the analysis, take $T = \ln(4n)$ where $|U| = n$. (The constant
+$4$ is chosen to make the arithmetic clean.)
+
+** Size after $T$ rounds
+
+\[
+E[|S_{ALG}|] = T \sum_s x_s^*
+             = T \cdot OPT_{LP}
+             \leq T \cdot OPT.
+\]
+
+*Goal.* Show $|S_{ALG}| \leq 4 \ln(4n) \cdot OPT$ with reasonable
+probability. Equivalently, bound the probability that it /fails/ this
+bound.
+
+By Markov's inequality $\Pr[X \geq a] \leq E[X] / a$, so
+
+\[
+\Pr\!\bigl[|S_{ALG}| > 4 T \cdot OPT\bigr]
+\leq \frac{T \cdot OPT}{4 T \cdot OPT} = \frac{1}{4}.
+\]
+
+** Validity after $T$ rounds
+
+A specific element $u$ is uncovered after $T$ rounds only if it was
+uncovered in every single round:
+
+\[
+\Pr[u \text{ uncovered after } T]
+\leq \bigl( e^{-1} \bigr)^{T}
+= e^{-\ln(4n)}
+= \frac{1}{4n}.
+\]
+
+By a union bound, the probability that /any/ element is uncovered is
+$\leq n \cdot (1 / 4n) = 1/4$.
+
+** Combining
+
+- Probability of size violation: $\leq 1/4$.
+- Probability of coverage failure: $\leq 1/4$.
+- Probability of at least one problem: $\leq 1/2$.
+
+So with probability $\geq 1/2$ the algorithm returns a valid cover of
+size $\leq 4 \ln(4n) \cdot OPT$. Refining the constants tightens this
+to $\geq 9/16 \approx 0.56$.
+
+If we re-run the boosted algorithm $k$ times independently, the
+probability of never getting a good run is at most $(7/16)^k$, which
+shrinks exponentially — so with high probability we get a good run
+quickly.
+
+* Recap
+
+The algorithm gives a high-probability polynomial-time
+$O(\log n)$-approximation for Set Cover. We can shift the uncertainty
+onto running time instead of solution quality, or vice versa, by
+adjusting where the randomness lives.

@@ -1,0 +1,40 @@
+#+TITLE: Vertex Cover — 2-Approximation
+#+OPTIONS: toc:nil num:nil
+
+*Vertex Cover.* Given a graph, find the smallest subset of vertices
+such that every edge in the graph has at least one endpoint in the
+subset.
+
+* Algorithm
+
+#+BEGIN_SRC text
+While an uncovered edge exists:
+  select both of its endpoints
+#+END_SRC
+
+* Why $ALG \leq 2 \cdot OPT$
+
+Let $E'$ be a subset of edges that pairwise share no vertex — a
+/matching/. Then $|E'| \leq OPT$: covering each edge of $E'$ requires
+at least one distinct vertex, so any vertex cover has size $\geq |E'|$.
+
+Does the algorithm's output relate to any such matching? Yes — the
+edges it processes form one. Every time the algorithm picks an
+uncovered edge and adds both endpoints, subsequent iterations skip
+any edge sharing either endpoint. So the picked edges form a matching
+$E'$, and $ALG = 2 |E'|$.
+
+Combining:
+
+\[
+ALG = 2 |E'| \leq 2 \cdot OPT.
+\]
+
+* Room for improvement
+
+We cannot find optimal vertex covers in polynomial time unless
+$P = NP$, but this algorithm is at worst twice optimal. Two ways to
+tighten the bound:
+
+- Design a new algorithm.
+- Sharpen the analysis of this one.

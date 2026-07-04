@@ -1,0 +1,663 @@
+* Dynamic Programming
+1/29/2026######################################################################## 
+
+ 
+
+Dynamic Programming 
+
+ 
+
+ 
+
+Trick or Treating Optimization: 
+
+ 
+
+Fact: Red house, green house, and blue house gives you 25 pounds of candy in the fewest amount of stops. The blue house gives you 5 pounds of candy. What can we conclude? 
+
+The fastest way to get 20 pounds is by visiting the red and green house. If there was another colored house that gave more than 20 pounds, then our original fact would be contradicted.  
+
+ 
+
+Optimal substructure: if removing a part of an optimal solution results in an optimal solution to a smaller problem. 
+
+Central tenant of Dynamic programming: leverage optimal substructures. 
+
+ 
+
+ 
+
+Directed Acyclic Graph (DAG) 
+
+ 
+
+Longest path in a DAG: find the longest path between any two vertices in the graph 
+
+ 
+
+Scheduling problem 
+
+task 
+
+description 
+
+duration 
+
+a 
+
+select location 
+
+2 days 
+
+b 
+
+get permits 
+
+4 days 
+
+c 
+
+select date/time 
+
+1 day 
+
+d 
+
+hire vendors 
+
+2 days 
+
+e 
+
+make flyers 
+
+1 day 
+
+f 
+
+market event 
+
+1 day 
+
+ 
+
+Critical path: sequence of dependent tasks that determines the minimum time to complete project. the days are weights. If any task on the critical path is delayed, the project is delayed 
+
+ 
+
+ 
+
+Goal: Given a DAG, find the longest path between any two vertices in the graph. 
+
+ 
+
+Observations: if the longest path goes from a to e and passes through b, what could we say about the part of that path to b? 
+
+the path from a to b has to also be an optimal solution. 
+
+the longest path to e = the max(logest path to b, longest path to c, longest path to d + 1) (look at the graph in the lecture for this to make more sense ~25 minutes). 
+
+ 
+
+In general, we are ready to calculate the longest path to a vertex if we know the longest path for all incoming neighbors 
+
+ 
+
+topological ordering 
+
+There are various algorithms to find topological orderings 
+
+standard running time = O(|V|+|E|) 
+
+ 
+
+plan:  
+
+topologically sort vertices 
+
+Make array to store length of longest path that ends at each vertex 
+
+for each vertex ino order, calculate longest path as: 
+
+max_n(longest path to n) +1, for all incoming neigbors n.  
+
+0 if no incoming neighbors) 
+
+largest value in array = longest path 
+
+ 
+
+We have an array with numbers, but we dont have the true critical path. So to modify the plan,everytime we save the max path to a node, to store the node that came before that maximum. Now we have two arrays, one to store the max number for each node, and the other to store the node that came before the node. 
+
+ 
+
+ 
+
+Vertex Cover 
+
+ 
+
+Vertex Cover: Given a graph, find the smallest subset of vertiecs such that every edge in the graph has at least one vertex in the subset. If we change this to a tree instead of a graph, we can solve this efficiently with dynamic programming. On a graph, this is NP hard.  
+
+ 
+
+imagine the minimum vertex cover. what can we say about a? 
+
+vertex a is either in the vertex cover, or not in the vertex cover. If we can figure out a way to quantify the minimum vertex cover with and without a, we can choose which one is the best. 
+
+ 
+
+2/3/2026############################################################################### 
+
+ 
+
+To solve a vertex cover for a tree, we will start with an arbitrary node a. a is either in the minimum vertex cover, or not in the minimum vertex cover.  
+
+ 
+
+Let f(v) = Size of minimum vertex cover rooted at v. 
+
+If a is in a minimum VC: 
+
+f(a) = 1 + ?? (1 since we know a is in the minimum VC) 
+
+f(a) = 1 + f(b) + f(c), where f(b) is the subtree rooted at node b, and f(c) is the subtree rooted at node c. 
+
+Look at the graph in the lecture, but you can't skip b and go straight to d because the recursive function, if the subtree is rooted at d, and d is not in the minimum vc, then the edge between b and d will be discarded, which breaks the vertex cover. therefore, we need to have b rooted at the tree instead of jumping straight to d. 
+
+if a is not in a minimum VC: 
+
+f(a) = 2 + f(d) + f(e) + f(f) + ??? (2 since we know node b and node c are in the minimum VC) 
+
+How do we determine which reality is true? 
+
+It depends on which f(a) is smallest. If we have the values of f(b), f(c), f(d),... etc., then we can calculate the smallest one between the two.  
+
+ 
+
+
+ 
+
+ 
+
+Are we ready to calculate f(a) here? 
+
+ 
+
+no, the dynamic programming part of this requires us to save our sub-solutions. 
+
+Where do we have all the information we need to calculate f(a)? 
+
+at the leaves, if a is a leaf, f(a) = 0 
+
+ 
+
+ 
+
+When are we ready to calculate f(c)? 
+
+When we have f(e) and f(f) and f(a) for all of c's grandchildren 
+
+ 
+
+How can we do this? 
+
+Depth first search variants 
+
+pre-order traversal: processing nodes as soon as you get to it 
+
+post-order traversal: processing nodes once the node is abandoned. 
+
+Post order is the useful one for this algorithm 
+
+ 
+
+``` 
+
+find_min_vc(Tree T): 
+
+vc = [0, ..., 0] #global var 
+
+min_vc(T.root) 
+
+return vc[T.root] 
+
+ 
+
+ 
+
+# let vc[v] be array of min VC sizes rooted at v. 
+
+min_vc(Vertex v): 
+
+if v is leaf: 
+
+vc[v] = 0 
+
+else:  
+
+//calculate descendents 
+
+for u in child(v): 
+
+min_vc(u) 
+
+ 
+
+//min VC includes v 
+
+inc = 1 #include 
+
+for u in child(v): 
+
+inc += vc[u] 
+
+//min VC excludes v 
+
+exc = |child(v)| #exclude 
+
+for u in child(v): 
+
+for w in child(u): 
+
+exc += vc[w] 
+
+vc[v] = min(inc, exc) 
+
+``` 
+
+ 
+
+runtime: O(n) 
+
+ 
+
+How do we find the actual minimum vertex cover? 
+
+save the results. when the minimum of (inc, exc) is selected, save whether v or children of v are a part of the cover. 
+
+Backtrack. At root, dtermine if we did inc or exc then check children (inc) or grandchildren (exc). 
+
+ 
+
+ 
+
+2/5/2026############################################################################## 
+
+ 
+
+Dynamic programming process 
+
+identify optimal substructure 
+
+if we have an optimal solutoin of size x, what does that say about a sub-solution of x? 
+
+recursively define value of optimal solution: 
+
+A_n = max or min of something related to A_{n-i} 
+
+compute value of optimal solution 
+
+fill out table 
+
+construct optimal solution from computed information  
+
+either backtrack or make new table 
+
+ 
+
+ 
+
+Edit Distance 
+
+ 
+
+Given two strings, how many edits are needed to turn one string into another? 
+
+ 
+
+SNOWY vs SUNNY 
+
+S 
+
+ 
+
+N 
+
+O 
+
+W 
+
+Y 
+
+S 
+
+U 
+
+N 
+
+N 
+
+ 
+
+Y 
+
+ 
+
+Match: two characters match up (column 1) 
+
+Mismatch: two characters are different  (column 4) 
+
+Inserting blanks can help match characters (column 2) 
+
+ 
+
+Input: 
+
+two strings 
+
+cost functions 
+
+non matches =+ 1 
+
+blank insertion =+ 1 
+
+ 
+
+Objective: 
+
+Find cheapest possible cost 
+
+ 
+
+We want to align two strings, X= [x_1,...,x_n] and Y = [y_1, ... y_m] 
+
+E(i,j) = optimal cost of aligning X and Y 
+
+ 
+
+Can we say anything aout optimal alignment of X and Y? Specifically, how must the optimal alignment end?  
+
+ 
+
+Three possible outcomes: 
+
+Alignment 
+
+Cost 
+
+x_i 
+y_j 
+
+{0,1} + E(i-1, j-1) 
+
+x_i 
+
+blank 
+
+1+E(i-1, j) 
+
+blank 
+y_j 
+
+1+E(i, j-1) 
+
+ 
+
+E(i,j) = the minimum cost between each three alignment, where diff(i,j) = 0 if x_i = y_j, 1 if they dont match. 
+
+ 
+
+To store our answers, we will make a 2D matrix: 
+
+ 
+
+ 
+
+ 
+
+S 
+
+U 
+
+N 
+
+N 
+
+Y 
+
+ 
+
+cost = 0 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+S 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+N 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+O 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+W 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+Y 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+We start filling out the array, j = cols and i = rows, both starting at 0 
+
+ 
+
+ 
+
+ 
+
+S 
+
+U 
+
+N 
+
+N 
+
+Y 
+
+ 
+
+cost = 0 
+
+cost = 1 
+
+2 
+
+3 
+
+4 
+
+5 
+
+S 
+
+cost = 1 
+
+0 
+
+1 
+
+2 
+
+3 
+
+4 
+
+N 
+
+2 
+
+1 
+
+1 
+
+1 
+
+2 
+
+3 
+
+O 
+
+3 
+
+2 
+
+2 
+
+2 
+
+2 
+
+3 
+
+W 
+
+4 
+
+3 
+
+3 
+
+3 
+
+3 
+
+3 
+
+Y 
+
+5 
+
+4 
+
+4 
+
+4 
+
+4 
+
+3 
+
+ 
+
+With the table, we can build the solution with backgracking. 
+
+ 
+
+How did we get to E(5,5)? 
+
+From E(5,4),  E(4,5), or E(4,4)? It has to be E(4,4) since 5,4 has a higher cost, and and it cant be 4,5 since the cost didn't increase. 
+
+ 
+
+This indicates: 
+
+Diagonal move = match 
+
+vertial move = space inserted in j 
+
+horizontal move = space inserted in i 
+
+ 
+
+Running time for backtracking? 
+
+At workst, only match to insertions (aka never using diagonal moves) 
+
+O(2 max(n,m)) = O(max(n,m)) 
+
+This is never optimal though 
+
+At best, no insertions larger in larger string (its only using diagonal moves) 
+
+O(max(n,m)) 
+
+ 
+
+Space requirements? 
+
+n * m: O(nm) 
+
+ 
+
+Can we do it in O(min(n,m)) space? 
+
+Since we only need the previous row to calculate the next row, we only need two arrays to calculate the number. This only matters if we forget about backtracking. SInce it doesn't store the entire matrix, we cant extract the backtracked path from the matrix 
+
+ 

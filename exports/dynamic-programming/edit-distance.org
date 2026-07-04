@@ -1,0 +1,84 @@
+#+TITLE: Edit Distance
+#+OPTIONS: toc:nil num:nil
+
+*Problem.* Given two strings, how many edits are needed to turn one
+into the other?
+
+* Alignment view
+
+Line the strings up column by column. Each column is one of:
+
+- *Match* — the two characters agree (free).
+- *Mismatch* — the two characters differ (cost 1).
+- *Gap* — a blank inserted on one side (cost 1).
+
+Example: aligning ~SNOWY~ and ~SUNNY~.
+
+* Inputs and objective
+
+*Inputs.*
+- Two strings $X = [x_1, \ldots, x_n]$ and $Y = [y_1, \ldots, y_m]$.
+- Cost functions: mismatch costs $1$, blank-insertion costs $1$.
+
+*Objective.* Find the alignment with minimum total cost.
+
+* Recurrence
+
+Let $E(i, j)$ = optimal cost of aligning the prefixes $X[1..i]$ and
+$Y[1..j]$. The alignment must end in one of three ways:
+
+| ending             | cost                                     |
+|--------------------+------------------------------------------|
+| $x_i$ with $y_j$   | $\text{diff}(i, j) + E(i-1, j-1)$        |
+| $x_i$ with blank   | $1 + E(i-1, j)$                          |
+| blank with $y_j$   | $1 + E(i, j-1)$                          |
+
+where $\text{diff}(i, j) = 0$ if $x_i = y_j$ and $1$ otherwise. So
+
+\[
+E(i, j) = \min\bigl(
+  \text{diff}(i, j) + E(i-1, j-1),\;
+  1 + E(i-1, j),\;
+  1 + E(i, j-1)
+\bigr).
+\]
+
+Base cases: $E(0, j) = j$ and $E(i, 0) = i$ (aligning against an empty
+string requires inserting blanks for every remaining character).
+
+* Filling the table
+
+Store answers in an $(n+1) \times (m+1)$ matrix with $i$ indexing rows
+and $j$ indexing columns. Filled out for ~SNOWY~ vs. ~SUNNY~:
+
+|   |   | S | U | N | N | Y |
+|---+---+---+---+---+---+---|
+|   | 0 | 1 | 2 | 3 | 4 | 5 |
+| S | 1 | 0 | 1 | 2 | 3 | 4 |
+| N | 2 | 1 | 1 | 1 | 2 | 3 |
+| O | 3 | 2 | 2 | 2 | 2 | 3 |
+| W | 4 | 3 | 3 | 3 | 3 | 3 |
+| Y | 5 | 4 | 4 | 4 | 4 | 3 |
+
+Edit distance is $E(n, m) = 3$.
+
+* Recovering the alignment (backtracking)
+
+At each cell, ask which neighbor $E(i-1, j-1)$, $E(i-1, j)$, or
+$E(i, j-1)$ was used to produce it. That direction corresponds to:
+
+- diagonal move — match / mismatch;
+- vertical move — blank inserted in $Y$;
+- horizontal move — blank inserted in $X$.
+
+*Backtracking running time.* At worst, every step is a blank
+insertion, giving a path of length $O(n + m) = O(\max(n, m))$.
+Best case (all diagonals) also $O(\max(n, m))$.
+
+* Space
+
+*Full table.* $O(nm)$.
+
+*Reduced.* Since each row of the DP only depends on the previous row,
+$O(\min(n, m))$ space suffices — but only if you're happy to give up
+easy backtracking, since the full matrix is no longer available.

@@ -1,0 +1,58 @@
+#+TITLE: Ford-Fulkerson Algorithm
+#+OPTIONS: toc:nil num:nil
+
+* Algorithm overview
+
+1. Start with the zero flow and the initial residual graph
+   $G_f = G$.
+2. Select an $s$-$t$ path $P$ in the residual graph.
+3. Push $\text{bottleneck}(P)$ units of flow along $P$.
+4. Update the residual graph.
+5. Repeat until no $s$-$t$ path exists in the residual graph.
+
+*Pushing flow on a residual-graph path.*
+- If an edge is a /forward/ edge, increase the flow on it (adding).
+- If an edge is a /backward/ edge, decrease the flow on it (subtracting
+  from previously-pushed flow — this is how rerouting happens).
+
+* Claims
+
+** Integer capacities give integer flows
+
+If edge capacities are integer-valued, the flows found by the algorithm
+are also integer-valued.
+
+We only add flow equal to the bottleneck of a path, and all bottlenecks
+are edge capacities, which are integers. So every push is an integer,
+and total flow stays integer.
+
+** Termination (integer case)
+
+If edge capacities are integer-valued, the algorithm terminates.
+
+With integer capacities, each iteration increases the total flow by at
+least $1$. Since the total flow is bounded by the total capacity into
+$t$, the algorithm needs at most $|\text{max flow}|$ iterations.
+
+Note: this argument doesn't hold with irrational capacities, and there
+are pathological instances where Ford-Fulkerson fails to terminate.
+
+** Iterations preserve flow validity
+
+*If an iteration starts with a valid flow, it ends with a valid flow.*
+A flow is valid iff (i) it satisfies conservation of flow and (ii) it
+respects every edge's capacity.
+
+For each iteration only the vertices and edges on the chosen path
+change; everything off the path is untouched.
+
+- *Capacity.* The push is chosen to equal the bottleneck, so no edge
+  is pushed past its residual capacity. If an edge was full and we
+  subtract flow (backward direction), we still respect capacity.
+- *Conservation.* Each interior node on the path is touched by exactly
+  two edges of the path, and every case (both forward, one forward
+  one backward, etc.) preserves the invariant that flow in equals flow
+  out at that node.
+
+The algorithm starts with the zero flow, which is trivially valid, so
+by induction every flow along the way is valid.

@@ -1,0 +1,134 @@
+#+TITLE: Integer Linear Programming
+#+OPTIONS: toc:2 num:nil
+
+An /integer linear program/ (ILP) is a linear program where some or all
+decision variables are constrained to integer values.
+
+* Vertex Cover as an ILP
+
+Given a graph $G = (V, E)$, find the smallest $V' \subseteq V$ such
+that each edge in $E$ has at least one endpoint in $V'$:
+
+- $x_i \in \{0, 1\}$ — indicates whether vertex $i$ is selected.
+- *Objective:* $\min \sum_i x_i$.
+- *Subject to:* $x_i + x_j \geq 1$ for each edge $e = (i, j)$.
+
+Solving ILPs in general is NP-hard.
+
+* ILP vs. LP relaxation
+
+Since the LP relaxation has more feasible solutions (fractional ones
+are now allowed), for a minimization problem:
+
+\[
+OPT_{LP} \leq OPT_{ILP}
+\]
+
+If the LP relaxation's optimum happens to be at an integer solution,
+then a plain LP solver (e.g., Simplex) will find the ILP optimum for
+free.
+
+/Understand $OPT_{LP} \leq OPT_{ILP}$ fundamentally — likely test
+material./
+
+* Why are ILPs hard to solve?
+
+The continuous optimum of the LP relaxation doesn't map straightforwardly
+to an integer optimum:
+
+- The /closest/ integer point may not be feasible.
+- The /closest feasible/ integer point may not be optimal.
+- The /closest feasible integer point on the boundary/ may still not be
+  optimal.
+
+The integer feasible region is not convex, so a local optimum is not
+guaranteed to be a global optimum.
+
+*Integer hull* (the convex hull of feasible integer points):
+
+- Convex.
+- Local optimum = global optimum.
+- $O(n^{\lfloor d/2 \rfloor})$ faces, where $n$ is the number of points
+  and $d$ is the dimension — exponentially many in $d$.
+
+* Branch and bound
+
+Suppose we have a maximization ILP.
+
+1. Relax the ILP: $x \in \mathbb{Z} \to x \in \mathbb{R}$.
+2. Solve the relaxed LP. Say it gives objective 100 with some
+   fractional $x_i = 3.24$. Because relaxation only adds options,
+   $OPT_{LP} \geq OPT_{ILP}$ here (maximization).
+3. Split into two new LPs: one with $x_i \leq 3$, one with $x_i \geq 4$.
+4. Solve each.
+5. Recurse on any subproblem whose LP optimum is still fractional and
+   still promising.
+
+** Case 1 — both subproblems come back integer
+
+- Main LP relaxation: $obj = 100$ (fractional).
+- Subproblem 1: $x \in \mathbb{Z}$, $obj = 85$.
+- Subproblem 2: $x \in \mathbb{Z}$, $obj = 90$.
+
+Pick the larger one — subproblem 2's 90.
+
+** Case 2 — one subproblem is still fractional
+
+- Subproblem 1: $x \in \mathbb{R}$, $obj = 98$.
+- Subproblem 2: $x \in \mathbb{Z}$, $obj = 90$.
+
+Subproblem 1 gives us an /upper bound/ of 98 on that branch. Combined
+with subproblem 2's feasible integer 90, we have:
+- A feasible integer solution of value 90.
+- Bounds $[90, 98]$ on the true optimum.
+
+Branch further on subproblem 1. Suppose it splits into 1.1 (obj = 88)
+and 1.2 (obj = 97):
+
+- Subproblem 1.1 is /dead/ — 88 is already worse than the 90 we have
+  in hand, no need to explore it further.
+- Subproblem 1.2 needs more work (still $\leq 97$, still above 90).
+
+If 1.2 had come back with objective 85, both branches die and
+subproblem 2's 90 is optimal.
+
+** Does this always terminate at the optimum?
+
+Yes. This is essentially brute force with heuristics: adding enough
+$x_i \leq k$ / $x_i \geq k + 1$ constraints eventually bounds every
+variable to a single integer. Techniques like cutting planes and
+smart branching (picking the "right" $x_i$ to split on) speed it up
+in practice.
+
+#+INCLUDE: "total-unimodularity.org" :minlevel 2
+#+INCLUDE: "vertex-cover-ilp.org" :minlevel 2
+
+* When does the LP relaxation just work?
+
+If the LP relaxation's feasible region has only integer vertices, then
+solving the LP gives an integer answer — no branch and bound needed.
+Total unimodularity is one sufficient condition for this. See
+[[total-unimodularity][Total Unimodularity]] for the theorems and
+[[vertex-cover-ilp][Vertex Cover as an ILP]] for the concrete application to bipartite
+graphs and trees.
+
+* Non-unimodular ILPs that still relax cleanly
+
+Total unimodularity is *sufficient* but not necessary. As a
+counter-example the lecture gives an ILP whose constraint matrix is
+not totally unimodular, yet whose LP-relaxation feasible region still
+has only integer vertices (verified by plotting).
+
+** Circuit Value Problem
+
+/Question: given a Boolean circuit and inputs, is the output true?/
+
+Encode each gate as a decision variable in $\{0, 1\}$ with constraints
+that mimic AND/OR/NOT. When we relax the integrality constraint, the
+answer is /still/ guaranteed to be integer — the inputs are integers
+and the gate constraints preserve integrality.
+
+However, the constraint matrix is *not* totally unimodular (the
+lecture shows a determinant of $-2$, which lies outside
+$\{-1, 0, 1\}$). So this problem is a witness that total unimodularity
+is not the only route to an integer-vertexed feasible region.

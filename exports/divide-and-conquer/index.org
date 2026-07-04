@@ -1,0 +1,13 @@
+#+TITLE: Divide and Conquer
+#+OPTIONS: toc:2 num:nil
+
+Divide and conquer solves a problem by:
+
+1. *Divide* — split the input into smaller sub-problems.
+2. *Conquer* — solve each sub-problem recursively.
+3. *Combine* — merge the sub-solutions into a solution to the whole.
+
+The recursion terminates on trivially small sub-problems solved
+directly.
+
+#+INCLUDE: "closest-pair.org" :minlevel 2

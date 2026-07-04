@@ -1,0 +1,23 @@
+#+TITLE: Spanning Trees
+#+OPTIONS: toc:2 num:nil
+
+Given a connected graph, a subset of edges is a *tree* if it is connected
+and acyclic. A *spanning tree* is a tree that includes every vertex of the
+graph. The *minimum spanning tree (MST)* is the spanning tree with the
+smallest total edge weight; the distinction only matters on weighted
+graphs — on an unweighted graph any spanning tree already has the minimum
+possible number of edges.
+
+Standard sorting cost used below: /O(n log n)/.
+
+#+INCLUDE: "cut-property.org" :minlevel 2
+#+INCLUDE: "kruskal.org" :minlevel 2
+#+INCLUDE: "prim.org" :minlevel 2
+
+* Evaluating an algorithm
+
+Whenever we introduce an algorithm, we ask three questions:
+
+- *Validity* — does it actually produce a solution of the right kind?
+- *Running time* — how fast is it?
+- *Optimality* — is the solution it produces the best possible?

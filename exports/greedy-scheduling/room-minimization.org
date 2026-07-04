@@ -1,0 +1,31 @@
+#+TITLE: Room Minimization
+#+OPTIONS: toc:nil num:nil
+
+*Goal.* Compatibly schedule every course using the minimum number of
+rooms.
+
+* Ideas that fail
+
+- *Extend the single-room greedy.* Pick the earliest start time, assign
+  it to a room. If it overlaps every already-in-use room, open a new
+  room. This can open more rooms than necessary because it commits to
+  bad room assignments early.
+- *Fill one room fully, then start another.* Pack as many courses as
+  possible into one room via the [[interval-scheduling][interval scheduling]] algorithm, then
+  open a new room for the rest. Not optimal — leftover courses may need
+  many more rooms than a smarter global assignment.
+
+* Optimal algorithm
+
+Maintain two collections of rooms — /unbooked/ and /booked/ — plus the
+sorted list of courses.
+
+For each course, in order:
+
+1. If an unbooked room exists, assign the course to it and move that
+   room to the booked list.
+2. If not, open a new room for that course and add it to the booked
+   list.
+3. When a course finishes, move its room back to the unbooked list.
+
+This is optimal.

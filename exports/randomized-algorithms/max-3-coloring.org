@@ -1,0 +1,54 @@
+#+TITLE: Max 3-Coloring
+#+OPTIONS: toc:nil num:nil
+
+* Background: graph coloring
+
+Graph-coloring problems assign colors to vertices (or edges) subject
+to constraints.
+
+*Minimum Vertex Coloring.* Color the vertices of a graph using the
+smallest number of colors such that adjacent vertices are different
+colors. This is NP-hard.
+
+* Max 3-Coloring
+
+An edge is /satisfied/ if its endpoints have different colors. Using
+only three colors, color the vertices so as to maximize the number of
+satisfied edges.
+
+* Algorithm
+
+For each vertex, uniformly at random assign it one of the three colors
+(each with probability $1/3$).
+
+*Running time.* $O(n)$.
+
+*Validity.* Every vertex is assigned one of three colors.
+
+*Optimality.* Not usually — but /in expectation/, it's a
+$3/2$-approximation.
+
+* Analysis
+
+*Goal.* Show the algorithm is a $3/2$-approximation in expectation.
+
+Probability that a single edge is satisfied — enumerate the 9 equally
+likely color-pair outcomes for its two endpoints:
+\[
+(\mathit{bb}), bg, br, gb, (\mathit{gg}), gr, rb, rg, (\mathit{rr}).
+\]
+The three parenthesized outcomes are unsatisfied, the other six
+satisfied. So $\Pr[e \text{ satisfied}] = 6/9 = 2/3$.
+
+Define $X_e = 1$ if edge $e$ is satisfied, $0$ otherwise. Then
+$E[X_e] = 2/3$, and $\sum_e X_e = ALG$ is the number of satisfied
+edges.
+
+Since $OPT \leq |E|$ (can't satisfy more edges than exist),
+
+\[
+E[ALG] = \sum_e E[X_e] = \sum_e \frac{2}{3} = \frac{2}{3} |E|
+       \geq \frac{2}{3} OPT.
+\]
+
+That's the $3/2$-approximation bound: $E[ALG] \geq (2/3) OPT$.

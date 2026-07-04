@@ -1,0 +1,55 @@
+#+TITLE: Max 3-SAT
+#+OPTIONS: toc:nil num:nil
+
+* Background: SAT and 3-SAT
+
+A SAT formula $\phi$ has clauses composed of Boolean variables joined
+by ORs, with clauses joined by ANDs. The question is whether the
+variables can be set so that $\phi$ evaluates to /true/.
+
+Example:
+\[
+\phi = (x_1 \vee x_1 \vee x_2) \wedge (\overline{x_1} \vee \overline{x_2} \vee \overline{x_2}) \wedge (\overline{x_1} \vee x_1 \vee x_2)
+\]
+
+Setting $x_1 = \text{false}$, $x_2 = \text{true}$ gives
+\[
+(F \vee F \vee T) \wedge (T \vee F \vee F) \wedge (T \vee T \vee T) = T.
+\]
+
+- $\text{SAT} = \{\langle \phi \rangle : \phi \text{ is satisfiable}\}$.
+- $\text{3-SAT} = \{\langle \phi \rangle : \phi \text{ is satisfiable
+  and has 3 literals per clause}\}$.
+
+* Max 3-SAT
+
+Given a 3-SAT instance with three distinct variables per clause,
+assign truth values so as to maximize the number of satisfied
+clauses.
+
+* Algorithm
+
+Assign each $x_i$ to /true/ with probability $1/2$, /false/ otherwise
+— independently.
+
+* Analysis
+
+For a fixed clause with three distinct variables, there are $2^3 = 8$
+equally likely truth assignments. A clause is /unsatisfied/ only when
+every literal is false, which happens for exactly one assignment. So
+
+\[
+\Pr[c \text{ satisfied}] = 7/8.
+\]
+
+Define $Z_c = 1$ if clause $c$ is satisfied, $0$ otherwise. Then
+$E[Z_c] = 7/8$ and
+
+\[
+E[ALG] = E\!\left[\sum_c Z_c\right]
+       = \sum_c \frac{7}{8}
+       = \frac{7}{8} |C|
+       \geq \frac{7}{8} OPT.
+\]
+
+So the algorithm is an $(8/7)$-approximation in expectation.

@@ -1,0 +1,56 @@
+#+TITLE: Longest Path in a DAG
+#+OPTIONS: toc:nil num:nil
+
+*Goal.* Given a directed acyclic graph, find the longest path between
+any two vertices.
+
+* Motivation: critical path
+
+Consider a project-scheduling instance:
+
+| task | description       | duration |
+|------+-------------------+----------|
+| a    | select location   | 2 days   |
+| b    | get permits       | 4 days   |
+| c    | select date/time  | 1 day    |
+| d    | hire vendors      | 2 days   |
+| e    | make flyers       | 1 day    |
+| f    | market event      | 1 day    |
+
+The *critical path* is the sequence of dependent tasks that determines
+the minimum total time to complete the project. If any task on the
+critical path is delayed, the whole project is delayed.
+
+* Optimal substructure
+
+Suppose the longest path from $a$ to $e$ passes through $b$. Then the
+sub-path from $a$ to $b$ must itself be a longest path from $a$ to $b$.
+
+Recursively, the longest path ending at vertex $v$ is:
+
+\[
+L(v) = \max_{u \in \text{in-neighbors}(v)} \bigl( L(u) + 1 \bigr)
+\]
+
+with $L(v) = 0$ if $v$ has no in-neighbors.
+
+We are ready to compute $L(v)$ once we know $L(u)$ for every in-neighbor
+$u$ of $v$ — a natural ordering for this is a *topological sort*.
+
+* Algorithm
+
+Topological sort runs in $O(|V| + |E|)$.
+
+1. Topologically sort the vertices.
+2. Allocate an array to store the longest path ending at each vertex.
+3. Process each vertex in topological order and set
+   $L(v) = \max_u \bigl( L(u) + 1 \bigr)$ over in-neighbors $u$, or 0
+   if there are none.
+4. The largest value in the array is the length of the longest path.
+
+* Recovering the actual path
+
+The value array tells you the /length/ of the longest path but not the
+path itself. To recover it, maintain a second array that records, for
+each vertex, the predecessor on its longest incoming path. Then
+backtrack from the vertex with the maximum value.

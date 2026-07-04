@@ -1,0 +1,35 @@
+#+TITLE: Dynamic Programming
+#+OPTIONS: toc:2 num:nil
+
+* Optimal substructure
+
+/Optimal substructure/: if removing a part of an optimal solution
+yields an optimal solution to a smaller sub-problem.
+
+Central tenet of dynamic programming: /leverage optimal substructures/.
+
+** Motivating example: trick-or-treating
+
+Suppose the red, green, and blue houses together give you 25 pounds of
+candy in the fewest possible stops, and the blue house alone gives you
+5 pounds. What can we conclude?
+
+The fastest way to collect 20 pounds is to visit the red and green
+houses. If there were another color of house that gave more than 20
+pounds, the original fact ("25 pounds in the fewest stops") would be
+contradicted.
+
+* The DP process
+
+1. *Identify optimal substructure.* If we have an optimal solution of
+   size $n$, what does that say about a sub-solution of size $n - i$?
+2. *Recursively define the value of an optimal solution.* Express
+   $A_n$ as a max or min of something involving $A_{n-i}$.
+3. *Compute the value of the optimal solution.* Fill out a table.
+4. *Construct the optimal solution* from the computed information —
+   either by backtracking through the table, or by maintaining a
+   second table alongside the values.
+
+#+INCLUDE: "longest-path-dag.org" :minlevel 2
+#+INCLUDE: "vertex-cover-tree.org" :minlevel 2
+#+INCLUDE: "edit-distance.org" :minlevel 2

@@ -1,0 +1,69 @@
+#+TITLE: Simplex Algorithm
+#+OPTIONS: toc:2 num:nil
+
+The simplex algorithm walks along vertices of the feasible region of a
+linear program, moving to a neighboring vertex only if that improves
+the objective.
+
+* Neighbors
+
+Two vertices are /neighbors/ if they share $n - 1$ of the $n$
+inequalities that define them (in $n$-dimensional decision space).
+
+*Plan.* Move from vertex to vertex along shared edges, only ever moving
+in a direction that improves the objective.
+
+* Steps
+
+** Step 1 — is the current vertex optimal?
+
+Suppose the origin is feasible because it uniquely satisfies $n$
+constraints. Is it optimal?
+
+The origin is optimal iff every coefficient in the objective is
+non-positive (for a maximization problem) — in that case, moving away
+from the origin in any variable makes the objective no better.
+
+** Step 2 — move to a neighboring vertex
+
+Relax (drop) any constraint whose relaxation increases the objective.
+Keep increasing the freed variable $x_i$ until another constraint
+becomes tight — that's your new vertex.
+
+** Step 3 — redefine the coordinate system so that new vertex is the origin
+
+For each constraint $a_i x \leq b_i$, let $y_i = b_i - a_i x$. Then
+$y_i$ measures the slack — the distance from the current point to
+constraint $i$. In the new coordinates, the current vertex is at the
+origin, and we repeat step 1.
+
+** Step 4 — repeat
+
+* Loose ends
+
+- *Starting vertex.* The origin isn't guaranteed to be feasible. If it
+  isn't, we need a preliminary phase to find a feasible starting
+  vertex.
+- *Unbounded / infeasible solutions.* If we find no intersection point
+  while walking, the objective can increase to infinity. We can test
+  for this case explicitly.
+- *Degenerate vertices.* Relaxing a constraint may not actually move
+  the intersection point if more than $n$ constraints meet at a
+  vertex. Defining "neighbors" purely as sharing $n-1$ constraints can
+  loop; anti-cycling rules are needed.
+
+* Running time
+
+Let $n$ be the number of variables and $m$ the number of constraints
+defined by $A$.
+
+- Possible neighbors of a given vertex: $O(nm)$.
+- Testing whether a candidate neighbor is feasible: $O(nm)$
+  (originally $O(n^3)$, sharpened via row structure).
+- Possible number of feasible vertices — the outer loop count — is
+  bounded by the number of ways to choose the $n$ active constraints
+  out of $m + n$, i.e. $O\binom{m + n}{n}$, which is
+  $\Omega(2^n)$ in the worst case.
+
+So simplex is exponential in the worst case, even though it's fast in
+practice.

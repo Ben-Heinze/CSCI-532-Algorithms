@@ -1,0 +1,71 @@
+Simplex Algorithm 
+
+ 
+
+neighbors: two verices are neighbors if they ashare n-1 defining inequalities 
+
+plan: move from vertex to vertex by following.... 
+
+ 
+
+Step 1: check if current vertex is optimal 
+
+suppose origin is feasible because it uniquely satisfies n constraints 
+
+How do we determine if the origin is optimal? 
+
+The origin is optimal iff we make every variable negative (this is very easy to do) 
+
+Step 2: Move to a neighboring vertex 
+
+relax (remove) any constraint that allows us to increase the objective function . keep increasing x_i until another constraint becomes tight 
+
+Step 3: Redefine coordinate system so u is the origin 
+
+for constraint a_i x \leq b_i, y_i = b_i - a_i x, where y_i is the distance from x to constraint i 
+
+Step 4: Repeat 
+
+ 
+
+How to determine which constraint to relax? 
+
+ 
+
+ 
+
+Loose ends: 
+
+Starting vertex  
+
+there is no guarantee the origin is feasible 
+
+Unbounded/infeasible solution 
+
+we will find no intersection points, which means it will increase to infinity.  
+
+we can test for whether or not an intersection exists 
+
+Degenerate vertices 
+
+relaxing a constraint doesnt actually move the intersction point if there were multiple constraints. You can fall in a loop by defining neighbors as two constraints, but the intersection can be bounded by more than 2 constraints 
+
+Running time 
+
+Running time (n = # variables, m = # constraints defined by A) 
+
+number of possible neighbors for a given vertex is O(nm) 
+
+testing if possible neighbor is feasible is O(n^3) --> actually O(nm) 
+
+Possible number of iterations? 
+
+possible number of feasible vertices 
+
+vertex is defined by n constraints 
+
+at worst, its O(m+n choose n), so after some algebra, it is at best it's \omega(2^n) 
+
+ 
+
+ 

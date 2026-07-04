@@ -1,0 +1,211 @@
+Linear Programming 
+
+A structed way to optimize a goal by turning knobs and following certain rules 
+
+ 
+
+example:  
+
+goal (objective): get as rich as possible 
+
+knobs (decision variables): job hunting, education, risk 
+
+rules (constraints): no robbing, get enough sleep, see kids more than once a month 
+
+ 
+
+Vertex cover: 
+
+objective: select smallest subset of verticies 
+
+decision vars: select vertex 1? do we select vertex 2? ... 
+
+constraints: every edge needs a selected vertex 
+
+ 
+
+To define linear programming 
+
+Figure out what the knobs are 
+
+Create objective (what to minimize/maximize) 
+
+add constraints 
+
+ 
+
+Talks about building a linear program with a flow network 
+
+ 
+
+Decision variables: 
+
+Real numbers: solvable in polynomial time 
+
+integers = Not (yet?) 
+
+ 
+
+Objective: 
+
+can be minimized or maximized 
+
+must be linear combinations of variables of variables x_i 
+
+ 
+
+ 
+
+3/3/2026############################################################## 
+
+ 
+
+How can we efficiently find optimal solutions? 
+
+Identify two key properties of optimal solutions (see lecture for reasoning): 
+
+loptimal value occurs at a vertex 
+
+Local optimum is global optimum  
+
+ 
+
+Algorithm: test each vertex in order until no neighbors have larger (or smaller) value 
+
+ 
+
+convex definition: 
+
+--- 
+
+ 
+
+example 1: look up example 
+
+ 
+
+Issue 
+
+urban 
+
+suburban 
+
+rural 
+
+infastructure 
+
+-2 
+
++5 
+
++3 
+
+gun control 
+
++8 
+
++2 
+
+-5 
+
+farm subsidies 
+
++0 
+
++0 
+
++10 
+
+gas tax 
+
++10 
+
++0 
+
+-2 
+
+ 
+
+Decision variables:  
+
+x1 = $ spent on infastructure 
+
+x2 = $ spent on gun control 
+
+x3 = $ spent on farm subsidies 
+
+x4 = $ spent on gas tax 
+
+constraints:  
+
+-2x_1 + 8x_2 + 10x_4 \geq 50,000 
+
+5x_1 + 2x_2 \geq 100,000 
+
+3x_1 - 5x_2 + 10x_3 -2x_4 \geq 25,000 
+
+x_1,x_2,x_3,x_4 /geq 0 
+
+ 
+
+Objective: minimize advertising expenses while getting at least half of the voters  
+
+min(x1+x2+x3+x4) 
+
+ 
+
+ 
+
+Example 2 
+
+Length (feet) 
+
+# required 
+
+7 
+
+276 
+
+9 
+
+100 
+
+12 
+
+250 
+
+ 
+
+Decision variable: the way to cut the wood: 
+
+7, 7 (6' waste) 
+
+7, 9 (4' waste) 
+
+9, 9 (2' waste) 
+
+7, 12 (1' waste) 
+
+12 (would never be used though) 
+
+ 
+
+Objective: min(6x_1 + 4x_2 + 2x_3 + x_4) 
+
+ 
+
+Constraints:  
+
+x + x2+ x4 \geq 276 
+
+x2+ x3 \geq 100  
+
+x4 \geq 250 
+
+x1, x2, x3 \geq 0 
+
+ 
+
+ 
+
+ 

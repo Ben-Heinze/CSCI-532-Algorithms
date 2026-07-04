@@ -1,0 +1,108 @@
+#+TITLE: Knapsack — FPTAS
+#+OPTIONS: toc:nil num:nil
+
+*Knapsack.* Given a set of $n$ items with values $v_1, \ldots, v_n$
+and weights $w_1, \ldots, w_n$, select the most valuable combination
+subject to $\text{total weight} \leq W$.
+
+* Attempt 1 — DP over weights
+
+The natural DP is:
+
+\[
+\text{opt}(i, w) = \max\bigl(\text{opt}(i - 1, w),\;
+                             \text{opt}(i - 1, w - w_i) + v_i\bigr).
+\]
+
+To fill the table we need $\text{opt}(i, w)$ for every $i$ and every
+weight $w \leq W$. The number of distinct weights can be arbitrarily
+large — so this is not polynomial in the input size.
+
+Reducing the search space of weights compromises weight accuracy,
+which is not allowed. Weights are constraints, not costs.
+
+* Attempt 2 — DP over values
+
+Flip the DP: instead of "for a given weight, how much value?", ask
+"given a value threshold, what's the smallest weight?".
+
+Let $\text{opt}(i, V)$ = minimum weight of a subset of items
+$\{1, \ldots, i\}$ that achieves value at least $V$.
+
+*Case 1.* Item $i$ is not in the optimal solution:
+\[ \text{opt}(i, V) = \text{opt}(i - 1, V). \]
+
+*Case 2.* Item $i$ is in the optimal solution:
+\[ \text{opt}(i, V) = \text{opt}(i - 1, V - v_i) + w_i. \]
+
+Assume values are integers.
+
+** Algorithm
+
+1. For $0 \leq i \leq n$ and $0 \leq V \leq n \cdot v_{\max}$
+   (where $v_{\max} = \max_i v_i$), compute $\text{opt}(i, V)$.
+2. Return $V^* = \max\{V : \text{opt}(n, V) \leq W\}$.
+
+*Running time.* $O(n^2 \cdot v_{\max})$.
+
+This is /pseudo-polynomial/ — it's polynomial in $v_{\max}$, but
+$v_{\max}$ can be exponentially large in the /input size/.
+
+* FPTAS via value scaling
+
+To make this truly polynomial we shrink the values by rounding them
+down to a coarser unit. Rounding loses accuracy; the trade-off is
+controlled by $\epsilon$.
+
+Example: rounding from dollars to hundred-thousand-dollar bins.
+- $\$500{,}000 \to 5$ (lossless).
+- $\$163{,}882 \to 1$ (loses $\$63{,}882$).
+
+** Algorithm
+
+1. Let $v_{\max} = \max_i v_i$.
+2. For each $i$, let
+   \[
+   v_i' = \left\lfloor v_i \cdot \frac{n}{\epsilon \cdot v_{\max}}
+          \right\rfloor.
+   \]
+3. Run the value-based DP with $\{v_i'\}$, $\{w_i\}$, and $W$.
+
+*Running time.* $O(n^3 / \epsilon)$.
+
+** How does scaling affect the objective?
+
+Let $S_{ALG}$ be the set of items the algorithm picks and $S_{OPT}$
+the set of items in the true optimum. We want to relate
+$\sum_{i \in S_{ALG}} v_i$ to $\sum_{i \in S_{OPT}} v_i$, but the
+algorithm actually optimizes over the scaled values $v_i'$. So we
+chain:
+
+\[
+\sum_{i \in S_{OPT}} v_i
+\;\longleftrightarrow\;
+\sum_{i \in S_{OPT}} v_i'
+\;\longleftrightarrow\;
+\sum_{i \in S_{ALG}} v_i'
+\;\longleftrightarrow\;
+\sum_{i \in S_{ALG}} v_i.
+\]
+
+The key observation: on the /scaled/ instance, $ALG$ is optimal by
+construction, while $OPT$ is only optimal for the /unscaled/ instance.
+So $OPT$ is playing a game it wasn't designed for and can only do
+worse than $ALG$ on the scaled values. Working through the rounding
+error carefully (see lecture 4/16) yields:
+
+*Performance guarantee.* $ALG \geq (1 - \epsilon) \cdot OPT$.
+
+*Running time.* $O(n^3 / \epsilon)$.
+
+* Why this is an FPTAS
+
+The running time is polynomial in both $n$ and $1 / \epsilon$, and we
+can get arbitrarily close to optimal (at a cost). That's the
+definition of a *Fully Polynomial-Time Approximation Scheme*.
+
+Knapsack, despite being NP-hard, admits arbitrarily good polynomial-
+time approximations.

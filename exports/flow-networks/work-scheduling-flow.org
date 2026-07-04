@@ -1,0 +1,54 @@
+#+TITLE: Work Scheduling via Flow Networks
+#+OPTIONS: toc:nil num:nil
+
+*Problem.* We need to build a holiday schedule for employees. Each
+employee has a set of holidays they are able to work; each employee
+should work at most 3 holidays. Maximize the number of holidays
+covered.
+
+Example input:
+
+| Employee | Holidays they can work |
+|----------+------------------------|
+| $e_1$    | $h_1$, $h_2$           |
+| $e_2$    | $h_2$, $h_3$           |
+
+* Algorithm
+
+Build a flow network:
+
+- Add a node for each employee, a node for each holiday, a source $s$,
+  and a sink $t$.
+- Add an edge from $s$ to every employee node with capacity $3$.
+- Add an edge from every holiday node to $t$ with capacity $1$.
+- For each (employee, holiday) pair where the employee can work that
+  holiday, add an edge with capacity $1$.
+
+Find the maximum flow. Any employee-to-holiday edge carrying flow means
+that employee is assigned that holiday.
+
+* Analysis
+
+*Running time.*
+\[
+O(\text{build } G) + O(\text{max flow}) + O(\text{translate solution})
+\]
+Building and translating are $O(nm)$ where $n$ is the number of
+employees and $m$ the number of holidays.
+
+*Validity.*
+- /Only work days they can./ We only added edges between employees and
+  holidays they can work, so no flow can traverse a non-existent edge.
+- /At most 3 holidays per employee./ The source-to-employee edge has
+  capacity $3$. By the integer-flow assumption (see [[../index][flow networks]]),
+  every edge carries an integer amount of flow, so each employee is
+  assigned an integer number of holidays $\leq 3$. Without the
+  integrality assumption we could get nonsensical solutions like an
+  employee working "half a day" on six holidays.
+
+*Optimality.* We need the flow's value to equal the optimum of the
+scheduling problem, not just of the flow instance. Suppose for
+contradiction that there is a schedule assigning $\text{OPT} > F$
+holidays. That schedule can be turned into a valid flow of value
+$\text{OPT}$ in the same network — contradicting that $F$ is the max
+flow. So $F = \text{OPT}$.

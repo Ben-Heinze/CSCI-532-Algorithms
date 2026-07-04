@@ -1,0 +1,92 @@
+#+TITLE: Vertex Cover on a Tree (DP)
+#+OPTIONS: toc:nil num:nil
+
+*Vertex Cover.* Given a graph, find the smallest subset of vertices
+such that every edge has at least one endpoint in the subset. On
+general graphs this is NP-hard; on trees, DP solves it efficiently.
+
+* Optimal substructure
+
+Root the tree at an arbitrary node $a$. Either $a$ is in the minimum
+vertex cover or it isn't.
+
+Let $f(v)$ = size of the minimum vertex cover of the subtree rooted at
+$v$.
+
+** If $a$ is in the cover
+
+Its children's edges are covered by $a$, so each child's subtree can
+independently take its own minimum:
+
+\[
+f(a) = 1 + \sum_{c \in \text{children}(a)} f(c)
+\]
+
+(The $+1$ counts $a$ itself.)
+
+** If $a$ is not in the cover
+
+Every edge from $a$ to a child $c$ must be covered by $c$, so /every
+child must be in the cover/. From $c$'s subtree we then need to cover
+the sub-subtrees rooted at $c$'s children:
+
+\[
+f(a) = |\text{children}(a)| + \sum_{c \in \text{children}(a)}
+       \sum_{g \in \text{children}(c)} f(g)
+\]
+
+Note that we cannot "skip $b$ and go straight to $d$": if the subtree
+were rooted at $d$ with $d$ not in the cover, the edge $(b, d)$ would
+be uncovered.
+
+** Choosing between the two cases
+
+We compare the two values at the root and pick the smaller.
+
+* Where the recursion bottoms out
+
+We can only evaluate $f(v)$ once we have $f$ for the right descendants
+of $v$. At the leaves this is trivial: $f(\text{leaf}) = 0$. So compute
+$f$ bottom-up, which naturally corresponds to a post-order traversal.
+
+* Algorithm
+
+#+BEGIN_SRC text
+find_min_vc(Tree T):
+  vc = [0, ..., 0]           # global array indexed by vertex
+  min_vc(T.root)
+  return vc[T.root]
+
+# vc[v] stores the min VC size of the subtree rooted at v.
+min_vc(Vertex v):
+  if v is a leaf:
+    vc[v] = 0
+    return
+
+  for u in children(v):
+    min_vc(u)
+
+  # min VC includes v
+  inc = 1
+  for u in children(v):
+    inc += vc[u]
+
+  # min VC excludes v (children must all be included)
+  exc = |children(v)|
+  for u in children(v):
+    for w in children(u):
+      exc += vc[w]
+
+  vc[v] = min(inc, exc)
+#+END_SRC
+
+*Running time.* $O(n)$ — each vertex is touched a constant number of
+times.
+
+* Recovering the actual cover
+
+When taking the $\min(\text{inc}, \text{exc})$ at each vertex, record
+which branch won. Then backtrack from the root: at each vertex, either
+add it (if $\text{inc}$ was chosen) and recurse on children, or add
+all its children (if $\text{exc}$ was chosen) and recurse on
+grandchildren.

@@ -1,0 +1,91 @@
+#+TITLE: Approximation Algorithms
+#+OPTIONS: toc:2 num:nil
+
+Some problems (like Vertex Cover, Set Cover, Knapsack) are NP-hard, so
+we cannot solve them exactly in polynomial time — unless $P = NP$.
+Approximation algorithms are the compromise: run in polynomial time,
+provably close to optimal.
+
+* Techniques for handling NP-hard problems
+
+- Brute force (exponential time).
+- Heuristics.
+- Approximation algorithms.
+- Fixed-parameter tractable algorithms.
+
+* Approximation ratio
+
+For a minimization problem, an algorithm is an *$\alpha$-approximation*
+if:
+
+\[
+ALG \leq \alpha \cdot OPT
+\]
+
+- $ALG$: cost (size) of the algorithm's solution.
+- $\alpha$: the approximation ratio.
+- $OPT$: cost (size) of the true optimum.
+
+For a maximization problem, the analogous condition is:
+
+\[
+ALG \geq \frac{1}{\alpha} OPT.
+\]
+
+** Worked example
+
+Suppose an algorithm is a $1.12$-approximation ($\alpha = 1.12$) and
+returns a solution of cost $746.125$. Then
+$746.125 \leq 1.12 \cdot OPT$, so:
+
+\[
+\frac{746.125}{1.12} = 666.183 \leq OPT \leq 746.125.
+\]
+
+This gives us guaranteed upper and lower bounds around $OPT$. It's then
+a question of whether the returned solution is good enough for our
+purposes.
+
+* Approximation hierarchy
+
+- *NPO* — the class of NP-optimization problems.
+- *APX* $\subset$ NPO — problems approximable within a constant ratio.
+  (Vertex Cover $\in$ APX.)
+- *PTAS* $\subset$ APX — problems that can be approximated within
+  $1 + \epsilon$ for any fixed $\epsilon > 0$ (running time may depend
+  on $\epsilon$).
+- *FPTAS* $\subset$ PTAS — a PTAS whose running time is polynomial in
+  both the input size and $1/\epsilon$. (Knapsack has an FPTAS.)
+- *PO* — polynomial-time optimization (e.g., shortest path).
+- *Set Cover* $\in$ NPO but /not/ in APX unless $P = NP$.
+
+* Writing an approximation algorithm
+
+The recipe for proving an $\alpha$-approximation is usually:
+
+1. Identify a structure $S$ tied to the optimal solution and bound
+   $OPT$ using $|S|$.
+2. Relate the algorithm's output to that same structure.
+
+Two ways to sharpen an existing approximation:
+
+- Design a smarter algorithm.
+- Sharpen the analysis of an existing algorithm.
+
+#+INCLUDE: "vertex-cover-approximation.org" :minlevel 2
+#+INCLUDE: "set-cover-approximation.org" :minlevel 2
+#+INCLUDE: "knapsack-fptas.org" :minlevel 2
+#+INCLUDE: "ilp-vertex-cover-approximation.org" :minlevel 2
+
+* Related work: work scheduling on identical machines
+
+/Problem./ Given $n$ tasks with completion times $t_i$ and $w$
+identical workers, assign every task so that the maximum worker time
+is minimized.
+
+A simple greedy — /always give the next task to whichever worker
+currently has the smallest total load/ — is a $2$-approximation. The
+proof (sketch): the busiest worker in the optimum has load at least
+the average, so $(1/w) \sum_i t_i \leq OPT$; and no worker's load can
+exceed the average plus the length of the last task assigned to them,
+which itself is at most $OPT$. So $ALG \leq OPT + OPT = 2 \cdot OPT$.

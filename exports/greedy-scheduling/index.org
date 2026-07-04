@@ -1,0 +1,19 @@
+#+TITLE: Greedy Scheduling
+#+OPTIONS: toc:2 num:nil
+
+Three classic scheduling problems solved by greedy algorithms:
+
+- *Interval scheduling* in a single room — pick the maximum-size subset
+  of compatible courses.
+- *Room minimization* — schedule every course, using as few rooms as
+  possible.
+- *Earliest Deadline First* — order jobs so as to minimize the maximum
+  lateness across all clients.
+
+For each we prove a greedy rule optimal by an /exchange argument/: take
+any optimal schedule, and swap it towards the greedy schedule one step
+at a time without increasing cost or violating validity.
+
+#+INCLUDE: "interval-scheduling.org" :minlevel 2
+#+INCLUDE: "room-minimization.org" :minlevel 2
+#+INCLUDE: "earliest-deadline-first.org" :minlevel 2

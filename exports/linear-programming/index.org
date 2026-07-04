@@ -1,0 +1,119 @@
+#+TITLE: Linear Programming
+#+OPTIONS: toc:2 num:nil
+
+Linear Programming is a structured way to optimize a goal by turning
+knobs while following rules.
+
+* Vocabulary
+
+- *Objective (goal)* — what to minimize or maximize.
+- *Decision variables (knobs)* — the quantities you get to choose.
+- *Constraints (rules)* — restrictions on what the knobs can be.
+
+** Everyday example
+
+- *Goal (objective):* get as rich as possible.
+- *Knobs (decision variables):* job hunting, education, risk tolerance.
+- *Constraints:* no robbing, get enough sleep, see the kids more than
+  once a month.
+
+** Vertex Cover as an LP shell
+
+- *Objective:* select smallest subset of vertices.
+- *Decision variables:* /select vertex 1?/, /select vertex 2?/, ...
+- *Constraints:* every edge has a selected endpoint.
+
+* How to define a linear program
+
+1. Figure out what the knobs are.
+2. Create the objective (what to minimize or maximize).
+3. Add the constraints.
+
+* Domains for the decision variables
+
+- Real numbers: LP is solvable in polynomial time.
+- Integers: not (yet?) — that's the ILP world.
+
+* Objective
+
+- Can be minimized or maximized.
+- Must be a linear combination of the decision variables $x_i$.
+
+* Finding optimal solutions efficiently
+
+Two key properties of LP optima (see lecture for full reasoning):
+
+- The optimal value occurs at a vertex of the feasible region.
+- Any local optimum is a global optimum. (This is convexity.)
+
+*Algorithm.* Test each vertex in order until no neighbor has a larger
+(or smaller) objective value.
+
+* Example: political advertising
+
+Choose ad spend across issues to hit voter targets in urban, suburban,
+and rural regions:
+
+| Issue          | urban | suburban | rural |
+|----------------+-------+----------+-------|
+| infrastructure |   -2  |    +5    |   +3  |
+| gun control    |   +8  |    +2    |   -5  |
+| farm subsidies |    0  |     0    |  +10  |
+| gas tax        |  +10  |     0    |   -2  |
+
+*Decision variables.*
+- $x_1$ = $ spent on infrastructure ads
+- $x_2$ = $ spent on gun-control ads
+- $x_3$ = $ spent on farm-subsidy ads
+- $x_4$ = $ spent on gas-tax ads
+
+*Constraints.*
+\[
+\begin{aligned}
+-2 x_1 + 8 x_2 + 10 x_4 &\geq 50{,}000 \\
+5 x_1 + 2 x_2 &\geq 100{,}000 \\
+3 x_1 - 5 x_2 + 10 x_3 - 2 x_4 &\geq 25{,}000 \\
+x_1, x_2, x_3, x_4 &\geq 0
+\end{aligned}
+\]
+
+*Objective.* Minimize total spend while covering at least half the
+voters:
+\[
+\min\; x_1 + x_2 + x_3 + x_4
+\]
+
+* Example: wood cutting
+
+Long boards must be cut into pieces of various lengths. Demand:
+
+| Length (ft) | # required |
+|-------------+------------|
+|      7      |    276     |
+|      9      |    100     |
+|     12      |    250     |
+
+*Decision variables.* Each variable is a cutting pattern (how many
+boards to cut with that pattern):
+
+- $x_1$ = boards cut 7, 7 (6' waste)
+- $x_2$ = boards cut 7, 9 (4' waste)
+- $x_3$ = boards cut 9, 9 (2' waste)
+- $x_4$ = boards cut 7, 12 (1' waste)
+
+(A single 12' piece would never be used.)
+
+*Objective.*
+\[
+\min\; 6 x_1 + 4 x_2 + 2 x_3 + x_4
+\]
+
+*Constraints.*
+\[
+\begin{aligned}
+2 x_1 + x_2 + x_4 &\geq 276 \\
+x_2 + 2 x_3 &\geq 100 \\
+x_4 &\geq 250 \\
+x_1, x_2, x_3, x_4 &\geq 0
+\end{aligned}
+\]

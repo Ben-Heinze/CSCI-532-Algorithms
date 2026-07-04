@@ -1,0 +1,62 @@
+#+TITLE: Interval Scheduling (Single Room)
+#+OPTIONS: toc:nil num:nil
+
+*Input.*
+- A set of courses (jobs) that need rooms.
+- A start and finish time for each course.
+
+Two courses are *compatible* if their start/finish times do not overlap.
+
+*Goal.* Select a maximum-sized subset of pairwise compatible courses.
+
+* Greedy rules that fail
+
+Many intuitive greedy rules turn out to be sub-optimal — a useful
+exercise is to produce a counter-example schedule for each.
+
+- *Earliest start time first.* Fails when the first-starting class is
+  also the longest and dominates the entire day.
+- *Smallest conflict first.* For each iteration, pick the course that
+  overlaps the smallest number of others. Fails on a specifically
+  constructed instance (see lecture).
+- *Shortest duration first.* Fails when a short class sits inside a
+  window that blocks two longer, non-overlapping classes.
+
+The pattern for showing a proposed greedy algorithm is bad: build a
+small instance, work out an optimal solution by hand, and show the
+greedy rule locks in a strictly worse one.
+
+* Earliest compatible finish time
+
+Choose the course with the earliest finish time, discard everything
+incompatible with it, and repeat.
+
+*Implementation.*
+
+1. Sort courses by increasing finish time — /O(n log n)/.
+2. Select the first course.
+3. Iterate through the list looking for the next compatible course.
+
+*Total running time:* /O(n log n)/.
+
+*Validity.* At every step the algorithm discards courses that conflict
+with what has already been selected, so the returned subset is always
+pairwise compatible.
+
+*Optimality (exchange argument).* Let $C$ be the set of courses,
+$S_{ALG}$ the subset selected by the greedy algorithm, and $S_{OPT}$
+some optimal solution, both sorted by increasing finish time. We modify
+$S_{OPT}$ into $S_{OPT}'$ so that it agrees with $S_{ALG}$ on more
+courses without changing its size:
+
+- If $S_{OPT}$ and $S_{ALG}$ agree on the first $k-1$ courses but
+  disagree at course $k$, swap $S_{OPT}$'s $k$-th course for $S_{ALG}$'s
+  $k$-th course.
+- The swap preserves the count (still an optimal-sized schedule).
+- The swap preserves validity: the new course finishes no later than
+  the one being replaced (by the greedy rule, $S_{ALG}$'s $k$-th course
+  has the earliest finish among compatible options), so it doesn't
+  conflict with anything scheduled later.
+
+Repeat until $S_{OPT}' = S_{ALG}$. This proves $S_{ALG}$ has the same
+size as $S_{OPT}$, so it is optimal.

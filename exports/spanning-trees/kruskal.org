@@ -1,0 +1,14 @@
+#+TITLE: Kruskal's Algorithm
+#+OPTIONS: toc:nil num:nil
+
+*Kruskal's MST Algorithm.* Repeatedly add the edge with the smallest
+weight that does not create a cycle.
+
+*Validity.* We must show the algorithm builds a tree that is acyclic and
+includes every vertex of the graph. Refusing to add cycle-creating edges
+keeps the structure acyclic; on a connected input graph, the greedy
+choice eventually spans every vertex.
+
+*Optimality.* Follows from the [[cut-property][MST Cut Property]]: each edge Kruskal
+adds is the cheapest edge across the cut that separates the two
+connected components it merges, so it must appear in every MST.

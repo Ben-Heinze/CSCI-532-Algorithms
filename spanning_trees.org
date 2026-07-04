@@ -1,0 +1,339 @@
+* Spanning trees
+
+1/15/2026############################################################################### 
+
+Given a connected graph, a subset of edges is a tree if it is connected and acyclic 
+
+ 
+
+A Spanning tree is a tree if it includes all vertices in the graph. The minimum spanning tree is the tree with the minimum possible values. This is only for weighted edges. A spanning tree by itself is the smallest number of edges that includes all vertices, so without weights on the edges, there is no difference between them. 
+
+ 
+
+Greedy algorithms will be discussed for the next week. 
+
+ 
+
+Sorting is O(N log(N)) 
+
+-------------------------------------------------------------------------------------------------------------------------- 
+
+Kruskal's MST Algorithm: Add the edge with the smallest weight without creating a cycle.  
+
+ 
+
+What are we looking for in an algorithm? 
+
+Validity (does it fundamentally achieve a solution?) 
+
+Runtime 
+
+Optimality (how well the solution performs) 
+
+ 
+
+Proof of Validity: Prove the algorithm creates a tree, that is acyclic and includes all vertices. 
+
+ 
+
+Proof of optimality: 
+
+ 
+
+Use the MST Cut property Lemma: 
+
+Suppose that S is a subset of nodes from G = (V, E). Then, the cheapest edge e between S and V\S is guaranteed to be part of every MST (assuming all edge weights are unique). This is proved by contradiction (lecture 1/15 ~1hour). Basically, the Cut property lemma shows us that the cheapest cut is in the MST 
+
+S = set 
+
+V\S = Vertices not in set S 
+
+ 
+
+The cut property heavily relies on the edge weights being unique. To show the cut property without unique edge costs, we may need to use a substitution trick. (take one edge from another optimal ST against another optimal ST, and see if they create the same tree? If not, choose another edge to see if it can accomplish that? 
+
+ 
+
+ 
+
+To prove our ST is a MST, we need to show that every single edge in the given ST exists in the MST. The Cut property proves that the cheapest cut exists in the MST. Therefore, if we use the cut property lemma on every edge in our ST, and they are all confirmed to be in the MST, then our ST is an MST. Check and review end of lecture to see how to choose S for the formal proof. 
+
+-------------------------------------------------------------------------------------------------------------------------------- 
+
+ 
+
+Prim's Algorithm: Mark a random node as connected. Find the edge with the smallest weight between a connected node and one that is not. Mark both endpoints as connected. We can use the cut property to prove this is optimal. 
+
+ 
+
+1/20/2026############################################################################### 
+
+ 
+
+assign courses to a single classroom 
+
+ 
+
+Input: (math syntax on slides, im not typing that stuff tho 
+
+Set of courses (jobs) that need rooms 
+
+Start and finish times for each course 
+
+Rules: classes are compatible if the start/finish times of classes don’t overlap 
+
+ 
+
+Goal: Select a maximum sized subset of compatible courses 
+
+ 
+
+Possible algorithms: 
+
+Earliest start time (issue if the first class is the longest class, not optimal) 
+
+ 
+
+Smallest conflict first: for each iteration, picks the course that overlaps with the smallest number of other courses (not optimal, see video for example) 
+
+Approach to solve, start with the smallest, create an optimal solution, then build around the optimal solution such that the algorithm chooses worse solutions. 
+
+there will be times he gives us an example algorithm and we have to show that it is sub-optimal/bad. 
+
+Smallest duration first (also not optimal) 
+
+Earliest compatible finish time:  
+
+Choose earliest finish time, throw out the non-compatible courses, and repeat.  
+
+Valid? 
+
+Does it return a subset of compatible courses? 
+
+Guaranteed compatible courses since the algorithm throws out the non-compatible ones 
+
+Running time 
+
+Implementation: 
+
+Sort by increasing finish times 
+
+select first course 
+
+iterate through list looking for first compatible course 
+
+O(n log(n)) 
+
+Performance? (~42min) 
+
+Plan: turn a hyopthetical optimal solution into the algorithm's solution without changing the cost (ie, number of courses) and without vioating course compatibility 
+
+Cannot prove for a specific set of courses, it has to be generic 
+
+Let C be the set of courses, S_alg is a subset of C selected by the greedy algorithm. S_opt is a subset of C that is an optimal solution, all sorted by increasing finish time. 
+
+Check if the first course in S_opt and S_alg are the same. If so, then that class is optimal. 
+
+If the S_opt and S_alg agree on the optimal solution up until course k (they disagree on course k), modify S_opt to hold S_alg's class solution (now called S_opt'), so now S_opt' agrees with S_alg for course k.  
+
+We need to prove we didnt break vality (still a compatible schedule or optimality (still has optimal number of courses) by swapping classes. 
+
+Optimality proof (cost): if S_opt and S_opt' have the same number of courses, the cost is the same  
+
+Validity proof: Argue why if S_alg is optimal, and S_opt is optimal, S_opt' is optimal. The newly-switched course (c_j) is compatible with S_alg and S_opt because the classes before c_j were already verified to be optimal. Due to the algorithm choosing the next earliest start time, S_opt's discrepency class cannot be bigger than S_alg's discrepency class, because if S_opt was bigger, then S_alg would have chosen it. 
+
+Conclusion: S_opt' is a valid schedule with the same number of courses as S_opt, so S_opt' is also optimal 
+
+Repeat until swapping the S_opt''s solution and S_alg's solution are the same without violating compatibility and optimality. 
+
+ 
+
+ 
+
+Room Minization 
+
+ 
+
+Goal: Compatibly scheudle all courses with the minimum number of rooms 
+
+ 
+
+Ideas: 
+
+Choose earliest start time, assign it too a room similarly to the Single room problem. If it overlaps with every current room, add a new classroom and add it there. Repeat until all classes are filled? 
+
+Pack all classes using the single room algorithm until its full, then add a new class, and repeat until all classes are filled? (Not optimal) 
+
+ 
+
+1/22/2026############################################################################### 
+
+Add an array for unbook rooms, booked rooms, and courses. Go through each course of the day and check if there's an unbooked room. If there is, assign it and move it to the booked rooms array. If not, add a new room for that time slot. move booked rooms to unbooked rooms when a class ends (optimal) 
+
+ 
+
+Client Scheduling 
+
+ 
+
+Suppose you're a plumber with a list of clients to help. Each client has a deadline of when they need help by and an amount of time they need help by. The goal is to minimize the number of angry clients when you go over the time limit. Assume every client that goes over the deadline will be mad for every hour the work requires (lateness) 
+
+ 
+
+Ideas: 
+
+Schedule based on the earliest deadlines first 
+
+(optimal?) 
+
+Schedule the jobs that have more schedule-flexability 
+
+Breaks if the smaller jobs has more flexibility but earlier deadline, and the larger job has less flexiblity but a larger flexability. 
+
+Schedule the jobs with the shortest amount of worktime first. 
+
+Breaks when there is a big job with a large window, and ther was a smaller job that has a bigger work window. Since the smaller job was chosen first, the bigger windowed job is late, but if you did the big job first then the second one could be done after since it has more flexability. 
+
+ 
+
+Earliest Dealine First algorithm: 
+
+Theorem: The max lateness given by a schedule from the EDF algorithm is optimal 
+
+Plan of atttack: consider an optimal schedule, modify it in such a way that optimality is preserved until it is the same as our schedule 
+
+how could our algorithm's schedule differ from the optimal schedule? 
+
+ordering of the schedule (it's possible to have an multiple optimal solutions that have a different order of jobs, but we need to prove that it doesn't break anything) 
+
+Gaps in the schedule (it's possible to have an optimal solution that has gaps, but this algorithm does not produce gaps, but we can compare our solutions to schedules that do have gaps and they can both be optimal) 
+
+ 
+
+Lemma: An optimal schedule exists that has no gap between clients. 
+
+Proof: if an optimal schedule exists with japs, those gaps can be removed by shifting clients forward without increasing maximum lateness. 
+
+Definition: A schedule has an inversion if some client is scheduled before a client with an earlier deadline. Our schedule doesn't have inversions since we sorted by deadlines. 
+
+Lemma: An optimal schedule exists that has no inversions 
+
+Proof:  
+
+Any inversion results from two consecutive inverted clients.  
+
+Swapping an inversion reduces the number of inversions.  
+
+Swapping an inversion does not increase the maximum lateness of the schedule 
+
+Proof: We know that the inverted list and the swapped list starts in the same time since everything before the inverted jobs are the same, and we know that they end at the same time (i+j = j+i). You can swap the inverted schedule to make the swapped schedule and see who's deadlines are effected. If you move the latter's (j) job first, then the customer is not angry since you moved them up. If you move the   former's (i) job later, the customer may be worse since it was delayed. But it only matters if it is worse than i's lateness. We only care about not making the schedule worse. (The lateness is less for the client swapped earlier, later for the client swappeed later, and the same for all other clients.) (proof ~ 1hour in the lecture) 
+
+Does the ordering of the cliends lead to a different maximal lateness? 
+
+No, Since the deadlines are the same, the ordering only effects the number of angry clients, not the maximal lateness because the work times are always the same and will always amount to the same amount of total time.  
+
+ 
+
+1/27/2026################################################################################ 
+
+ 
+
+He goes over how the multi-course scheduling algorithm is O(C^2) instead of O(T*C) 
+
+ 
+
+Divide and Conquer 
+
+ 
+
+ 
+
+Closest Pair Problem  
+
+ 
+
+Goal: Given n points, find a pair of points that are closet to each other 
+
+ 
+
+Simple solution: 
+
+Compute distance for each pair 
+
+select smallest 
+
+Running time of O(N^2) 
+
+ 
+
+Can we do better? 
+
+Divide and conquer 
+
+Split the plane in half, so you have two subproblems of smaller sizes 
+
+Divide: we can sort by x coordinates, split it in half. 
+
+Conquer: Find the closest pairs on each side 
+
+Issue: if the closest pair is separated by the line we used to split, the algorithm wouldn't tell us. 
+
+Fix: 1st, compare the left half solution and the right half solution, and select the better one. Then check the boundary line for closer pair. Since we have the current closest pair (delta distance), our scanning boundary only needs to check for plus/minus delta distance from our division line. We don't care about anything outside of that beacuse the distance will always be greater than our currest best solution of delta. 
+
+This fix doesn't help running time since the amount of points arent guaranteed to shrink 
+
+If we zoom in to the graph (~check 35 minutes) and subdivide it to a grid where each grid was delta/2, how many points can we have in one box? 
+
+Nothing on the left hand side is closer than delta apart. Nothing on the right hand side is closer than delta apart. Delta is the closest pair on the left side and right side, which is our boundary. Due to this fact, it is only possible to have one point in each box on the grid. We are given a small number of boxes on the grid. We are going to start from the lowest y-value point possible, then going up which helps limit the search space. We only need to check the 11 points after our point is being considered. we have officialyl reduced the number of points to consider. The grid is not actually used in implementation. 
+
+Solution: 
+
+Sort straddle points by y coordinate 
+
+only possible `delta-busting` points are the 11 points after our points is being considerd, since 11 is the maximum number of points possible that's less than delta.  
+
+findClosestPair(P): 
+
+sort points by x coord, find L, make P_left and P_right O(nlogn) 
+
+determine d_left and d_right (finds closest pair on left and right, recursive process) 
+
+O(?) 
+
+To determine the running time of the recursive process, draw a tree. image in lecture. 
+
+O(n*log^2(n)) 
+
+let delta = min(d_left, d_right)  O(1) 
+
+let S be the straddle points within delta of L O(n) 
+
+sort S by y-coord O(nlogn)  
+
+compare points in S to next 11 points and update delta O(n) 
+
+return delta O(1) 
+
+Recursive process: 
+
+divide points in half 
+
+repeat division until determining d_left and d_right is trival 
+
+combine left and right sides using the straddle hunting algorithm above to find closest of the subproblems 
+
+Valid? 
+
+Yes 
+
+Optimal? 
+
+If there was a closer pair, they wouldve been compaired on the left side, right side, or as a straddle point 
+
+Running time? 
+
+O(n*log^2(n)) based on current algorithm (can change with pre-sorting) 
+
+The running time is driven by the sorting, which happens at every step. Instead of sorting during ever recursion step, we can pre-sort the x values, pre-sort the y-values before we call findClosestPair(). This removes the sorting that is used in every recursive call. Now, the algorithm is O(n*log(n)) 
+
+ 

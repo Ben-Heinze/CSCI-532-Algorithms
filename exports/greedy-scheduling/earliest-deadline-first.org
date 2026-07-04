@@ -1,0 +1,72 @@
+#+TITLE: Earliest Deadline First (Client Scheduling)
+#+OPTIONS: toc:nil num:nil
+
+*Setup.* You are a plumber with a list of clients. Each client has a
+deadline by which they need help, and a duration of work. A client is
+angry for every hour by which their job runs past their deadline
+(/lateness/). The goal is to schedule all jobs to minimize the maximum
+lateness across clients.
+
+* Ideas that fail
+
+- *Earliest deadline first.* (Actually optimal — see below.)
+- *Most schedule flexibility first.* Breaks when a smaller job has a lot
+  of flexibility but an early deadline and a larger, less flexible job
+  is preempted.
+- *Shortest job first.* Breaks when a big job with a wide window is
+  pushed behind small jobs and misses its deadline unnecessarily.
+
+* Earliest Deadline First (EDF)
+
+Sort jobs by deadline (earliest first) and schedule them back-to-back
+starting at time $0$.
+
+*Theorem.* EDF produces a schedule with optimal maximum lateness.
+
+*Plan of attack.* Take any optimal schedule and modify it, preserving
+optimality, until it matches EDF's schedule.
+
+** Two ways EDF's schedule can differ from an arbitrary optimum
+
+- *Ordering.* Multiple optimal schedules may exist with different job
+  orderings.
+- *Gaps.* An optimal schedule may leave idle gaps between jobs. EDF
+  does not, but we can compare to schedules that do.
+
+** Lemma: no-gap optimal schedule
+
+*Lemma.* There exists an optimal schedule with no gap between jobs.
+
+*Proof.* Given any optimal schedule with gaps, shift each job forward
+into the gap immediately before it. This can only reduce a job's finish
+time, so no job's lateness increases; the maximum lateness cannot go up.
+
+** Lemma: no-inversion optimal schedule
+
+*Definition.* A schedule has an *inversion* if some client is scheduled
+before another client with an earlier deadline. EDF has no inversions.
+
+*Lemma.* There exists an optimal schedule with no inversions.
+
+*Proof sketch.*
+- Any inversion is caused by some pair of /consecutive/ inverted
+  clients (if all consecutive pairs are in order, there are no
+  inversions).
+- Swapping a consecutive inverted pair reduces the total number of
+  inversions.
+- Swapping does not increase the maximum lateness.
+
+  The two swapped jobs occupy the same combined time slot before and
+  after the swap. The client moved earlier finishes earlier (lateness
+  decreases). The client moved later finishes later — but at worst its
+  new finish time equals what the other client's finish time was in the
+  original schedule, whose lateness we were already tolerating. All
+  other clients are unaffected. So the maximum lateness cannot go up.
+
+Repeatedly swapping consecutive inversions turns any optimal schedule
+into an inversion-free optimal schedule — which, up to permutation of
+equal-deadline jobs, is EDF's schedule.
+
+*Does reordering equal-deadline jobs change the maximum lateness?* No.
+The deadlines are the same and the total work is the same, so the
+maximum lateness is unchanged.

@@ -1,0 +1,18 @@
+#+TITLE: Randomized Algorithms
+#+OPTIONS: toc:2 num:nil
+
+Randomization gives simple algorithms with strong /expected/
+guarantees. Two flavors show up in this class:
+
+- *Random assignments* — pick each decision uniformly at random and
+  bound the expected quality (Max 3-Coloring, Max 3-SAT).
+- *Randomized rounding* — solve an LP relaxation and use the LP values
+  as probabilities for how to round (Set Cover).
+
+Recall for maximization problems: if the algorithm's expected value
+satisfies $E[ALG] \geq (1/\alpha) OPT$, it is an $\alpha$-approximation
+in expectation.
+
+#+INCLUDE: "max-3-coloring.org" :minlevel 2
+#+INCLUDE: "max-3-sat.org" :minlevel 2
+#+INCLUDE: "randomized-rounding-set-cover.org" :minlevel 2

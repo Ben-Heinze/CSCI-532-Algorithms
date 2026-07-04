@@ -1,0 +1,23 @@
+#+TITLE: MST Cut Property
+#+OPTIONS: toc:nil num:nil
+
+*Lemma (Cut Property).* Suppose $S$ is a subset of the nodes of
+$G = (V, E)$. Then the cheapest edge between $S$ and $V \setminus S$ is
+guaranteed to be part of every MST (assuming all edge weights are unique).
+
+- $S$: the chosen set of vertices.
+- $V \setminus S$: the vertices not in $S$.
+
+The proof is by contradiction: if a supposed MST omitted the cheapest
+crossing edge, swapping it in would yield a spanning tree of strictly
+smaller weight.
+
+The cut property relies on edge weights being unique. Without unique
+weights we may need a substitution argument — swap one edge from a
+candidate MST with a different equally-cheap crossing edge and check
+that we still get a spanning tree of the same total weight.
+
+*Using the cut property to prove a spanning tree is minimum.* To show a
+spanning tree $T$ is an MST, it suffices to show that every edge of $T$
+is the cheapest edge across /some/ cut. Choosing the right $S$ for each
+edge is the crux of the formal proof.

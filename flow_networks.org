@@ -1,0 +1,310 @@
+2/10/2026################################################################################ 
+
+
+Flow networks 
+
+ 
+
+Motivation: suppose we have a directed graph that represent an oil pipeline network. edge weight represent pipe capacity. how much oil can we transfer from soure s to sink t? (there's a weighted DG on the slide) 
+
+ 
+
+s generates the oil 
+
+t is where the oil goes 
+
+ 
+
+The weights of the DG represent how much oil the pipe (edge) can widthstand. However, the amount of oil thats coming is depending on how many units of oil the pipe before it can hold.  
+
+ 
+
+ 
+
+flow network:  
+
+directed edge graph G = (V,E) 
+
+finite positive edge capacity c_e 
+
+single source, s, no input edges 
+
+single sink, t, no output edges 
+
+ 
+
+An s-t flow is a function f: E exists in all positive real numbers such that: 
+
+come back to notes to fill this out () 
+
+conservartion of flow constraint: "everything that goes into a node has to come out, except for s and t. If it doesn't, then something broke 
+
+ 
+
+ 
+
+Maximum Flow Problem:  
+
+ 
+
+Problem: given a flow network, find the maximum possible value of flow 
+
+ 
+
+Ideas? 
+
+Push bottleneck: 
+
+select path P 
+
+only push the minimum capacity on any edge in path P (push the bottleneck(P)) 
+
+calculate residual graph (capacity network G - flow network f = residual capacity G_f) 
+
+Look for another valid path P in the residual graph G_f, repeat until all paths are found 
+
+Not optimal. 
+
+we need a way to reroute flow 
+
+Algorithm Overview 
+
+start with 0 flowand initial residual graph 
+
+select an s-t path P in residual graph 
+
+push bottleneck(P) flow on P 
+
+update residual graph 
+
+repeat until no s-t paths exist in residual graph 
+
+pushing flow on a path 
+
+if edge is a forward edge, increase flow 
+
+if edge is a backward edge, decrease flow 
+
+Ford-Fulkerson algorithm 
+
+Validity 
+
+running time 
+
+finds max flow 
+
+non-trivial 
+
+(we will come back to this later) 
+
+2/19/2026 we came back to it###################################################### 
+
+ 
+
+increasing flow forward is equal to adding, add flow backwards is equal to subtracting from the flow.  
+
+ 
+
+Ford-Fulkerson 
+
+ 
+
+Claims: 
+
+if edge capacities are integer valued, flows found by algorithm wil be too 
+
+We only supply flow to the solution from the bottleneck, and all the bottlenecks are the capacities of the edge. Since all of the capacities are integers, the flows will always be an integer 
+
+if edge capacities are integer valued, the aglorithm will terminate 
+
+with integer capacities, each iteration increases flow by >=1. Since max flow is bounded by the total capacity into t (the sink), the algorithm needs <= |Max Flow| iterations 
+
+note: doesn't hold with other variations such as irrational edges 
+
+If an iteration stasrts with a valid flow, it ends with a valid flow 
+
+We need to show we know the original flow is a valid flow, then the output flow is valid 
+
+A flow is valid if it has conservation of flow, and abides by capacity. For each iteration, you only need to look at the path of the flow for the iteration. anything outside of that path does not change; only look at the vertices and edges on the path since they were the only ones that changed. The capacity is not violated since the flow-pushing part is based on bottleneck. If an edge is initially at capacity, and we remove flow, then that is still not violated. (review).  
+
+On the path, each node is guaranteed two edges attached, and it can be four possibilities:  
+
+both are forward edges 
+
+f' = f + bottleneck 
+
+edge1 is forward and edge2 is backward 
+
+f'_in = f_in + bottleneck - bottleneck = f_in = f_out - f'_out 
+
+both are backward edges go through next 2 at home 
+
+edge1 is backward and edge 2 is forward 
+
+To show conservation of flow is achieved, we show the total amount into node V is the total amount coming out of V. flow = f. f' = f + bottleneck 
+
+First iteration starts with a valid flow 
+
+Algoirthm starts with 0 flow, which is a valid flow 
+
+ 
+
+2/24/2026######################################################################### 
+
+Optimality:  
+
+Theorem: flow returned by the ford-fulkerson algorithm is a maximum flow 
+
+ 
+
+s-t cut: segmentation of vertices such that s and t are in different sets 
+
+ 
+
+capacity of a cut: sum of the max capacities leaving set s. 
+
+ 
+
+we could argue that every single cut is an upper bound on the max flow.  
+
+ 
+
+proposal: the minimum capacity cut = maximum flow. 
+
+ 
+
+s-t cut definition: suppose G is a flow network and nodes in G are divided into two sets, A and B, such that s \in A and t \in B. We call (A,B) in s-t cut. The capacity of the cut, c(A,B), is the sum of capacities of all edges out of A. Source s and sink t cannot be in the same set. We are guaranteed to see everything that travels from s to t. It is possible to count the same flow twice if if a flow goes through s-t, then back t-s, then back s-t, but that does we don't care about that. 
+
+ 
+
+Game plan: 
+
+Show that value of every flow is \leq capacity of every cut 
+
+Ford fulkerson finds a specific flow, and we can use it to find a specific cut where the values are the same. Given a flow where there are no s-t paths left in the residual graph,there is a specific cut whose capacity = flow value 
+
+what if we find a flow thats bigger? then 1. is invalid, which is a contradition. 
+
+ 
+
+ 
+
+check lecture for the proofs 
+
+ 
+
+Corollary: suppose G is a flow network, f is an s-t flow on G and (A,B) is an s-t cut Then |f|  \leq capacitiy(A,B). (every flow is bounded by any s-t cut) 
+
+ 
+
+Proof: since the ford fulkerson algoirthm finishes when no s-t paths remain in G_, theorem 2 says there must be an s-t cut such that the value of flow found equals the capacity of the cut. By the corollary, there cannot be a flow with a larger value. Therefor, the flow found by the FF algoirthm is the max flow. 
+
+ 
+
+ 
+
+potential test question?How to find the min cut of a graph. he will give us a problem, and then we will need to find out the min cut from a real-world scenario ? first, find the max flow to get the residual graph, the cut is now S and everything with a path to S. You can find the min cut by finding max flow. How to find max flow? Ford-Fulkerson algorithm. 
+
+ 
+
+2/17/2026 ################################################################# 
+
+ 
+
+Assumptions: 
+
+we can find optimal and valid flows for a flow network 
+
+if the capacities of a flow network are integer-valued, the max flow we find is also integer-valued. 
+
+ 
+
+Work scheduling 
+
+ 
+
+Problem: we need to make a holiday schedules for employees. Each employee has a set of holidays that they are able to work. Each employee should work at most 3 holidays. We want to maximize the number of holidays covered. 
+
+ 
+
+Employee 
+
+Holiday(s) they can work 
+
+e_1 
+
+h1, h2 
+
+e_2 
+
+h2, h3 
+
+ 
+
+How do we turn this into a flow network? 
+
+ 
+
+Algorithm: 
+
+Build a flow network 
+
+Make a node for each employee, a node for each holiday, a source and a sink 
+
+connect the source to each mployee node with a capacity of 3 
+
+connect each holiday node to the sink with a capacity of 1 
+
+if an employee is able to work a holiday, connect them with a capacity of 1 
+
+Find the max flow 
+
+If an employee has outgoing edge to carry flow, assign them to work that holiday 
+
+ 
+
+Running time: O(time to build G) + O(Max flow) + O(time to translate solution) 
+
+time to build and translate boil down to O(nm) 
+
+ 
+
+Validity: 
+
+we can make sure its valid by looking at the constraints of the problem and seeing if the algorithm fulfils it.  
+
+constraints: 
+
+Employees are only scheduled on days they can work 
+
+We only have edges between the employee and days they can work, so it is not possible to put flow through a non-existant edge 
+
+employee can work a max of 3 holidays 
+
+We can prove this with our assumption: "if the capacities of a flow network are integer-valued, the max flow we find is also integer-valued.". We set a flow constraint of 3 between the source and each employee. The intger assumption forces they only work 3 days. Without the assumption, we can have an employee work half a day for 6 holidays. 
+
+Optimality: 
+
+We need to show the algorithms answer is optimal for the problem not that the max flow found is optimal for the flow network we made.  
+
+ 
+
+Suppose mad flow F < OPT <= m. That means employees can be assigned to cover OPT holidays. We can prove it with contradition. Assume we have a better optimal solution. We can turn that new optimal solution into a new flow network, and make sure it is a valid solution. Review this from lecture 
+
+ 
+
+ 
+
+ 
+
+2/19/2026################################################################################ 
+
+ 
+
+Homework: start on 4 and 5. 1 and 3 can be down after tuesday 
+
+ 
+
+see Ford-Fulkerson.  
+
+ 

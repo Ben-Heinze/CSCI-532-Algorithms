@@ -1,0 +1,37 @@
+#+TITLE: Min-Cut / Max-Flow
+#+OPTIONS: toc:nil num:nil
+
+*Theorem.* The flow returned by Ford-Fulkerson is a maximum flow.
+
+* s-t cuts
+
+*Definition.* Suppose $G$ is a flow network and the nodes of $G$ are
+partitioned into two sets $A$ and $B$ with $s \in A$ and $t \in B$. We
+call $(A, B)$ an /s-t cut/. The /capacity/ of the cut, $c(A, B)$, is
+the sum of capacities of all edges leaving $A$ (going from $A$ into $B$).
+
+Because $s$ and $t$ are in different sets, every unit of flow from $s$
+to $t$ crosses the cut somewhere.
+
+* Proof plan
+
+1. Show that the value of every flow is $\leq$ the capacity of every
+   $s$-$t$ cut.
+2. Show that when Ford-Fulkerson terminates, we can identify a specific
+   $s$-$t$ cut whose capacity equals the value of the flow it found.
+3. Together, these say that the flow Ford-Fulkerson finds cannot be
+   exceeded — because any bigger flow would violate step 1.
+
+*Corollary.* If $G$ is a flow network, $f$ is an $s$-$t$ flow on $G$,
+and $(A, B)$ is an $s$-$t$ cut, then $|f| \leq c(A, B)$.
+
+*Proof (main theorem).* When Ford-Fulkerson terminates, no $s$-$t$
+path remains in $G_f$. Step 2 gives an $s$-$t$ cut whose capacity
+equals the value of the flow found. By the corollary, no larger flow
+exists. So the flow found is a max flow. $\square$
+
+* Finding a min cut in practice
+
+*Recipe.* First find the max flow (with Ford-Fulkerson). Take the
+residual graph $G_f$. Let $A$ be $s$ together with every vertex
+reachable from $s$ in $G_f$. Then $(A, V \setminus A)$ is a min cut.

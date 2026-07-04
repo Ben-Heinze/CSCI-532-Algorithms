@@ -1,0 +1,59 @@
+#+TITLE: ILP-Based Vertex Cover Approximation
+#+OPTIONS: toc:nil num:nil
+
+For general (non-bipartite) graphs, the LP relaxation of the Vertex
+Cover ILP may return a fractional solution. Rounding that fractional
+solution gives a $2$-approximation.
+
+* The ILP and its LP relaxation
+
+Recall the [[../integer-linear-programming/vertex-cover-ilp][Vertex Cover ILP]]:
+
+- $x_i \in \{0, 1\}$ — indicates whether vertex $i$ is selected.
+- *Objective:* $\min \sum_i x_i$.
+- *Subject to:* $x_i + x_j \geq 1$ for each edge $(i, j)$.
+
+Relaxing gives an LP with $0 \leq x_i \leq 1$ and the same edge
+constraints.
+
+* Rounding
+
+Let $x^{LP}$ be an optimal LP solution. Round:
+
+- If $x_i^{LP} \geq 1/2$, include vertex $i$ in the cover.
+- Otherwise, exclude it.
+
+*Validity.* For every edge $(i, j)$, the LP constraint says
+$x_i^{LP} + x_j^{LP} \geq 1$, so at least one of them is $\geq 1/2$
+and gets included. So every edge is covered.
+
+* Approximation ratio
+
+We want $ALG \leq 2 \cdot OPT$.
+
+*Lower bound on $OPT$.* Since the LP has more feasible options than
+the ILP,
+\[
+\sum_i x_i^{LP} \leq OPT_{ILP} = OPT.
+\]
+
+*Upper bound on $ALG$.* The algorithm's cover $S_{ALG}$ consists of
+exactly the vertices with $x_i^{LP} \geq 1/2$. So
+
+\[
+ALG = |S_{ALG}| = \sum_{i \in S_{ALG}} 1
+      \leq \sum_{i \in S_{ALG}} 2 x_i^{LP}
+      \leq 2 \sum_i x_i^{LP}.
+\]
+
+Combining,
+\[
+ALG \leq 2 \sum_i x_i^{LP} \leq 2 \cdot OPT.
+\]
+
+* Why can't we do better than $1/2$?
+
+The $1/2$ threshold is what makes rounding valid: the constraint
+$x_i + x_j \geq 1$ guarantees that at least one endpoint is $\geq 1/2$.
+Raising the threshold would let both endpoints slip below and leave
+an edge uncovered.

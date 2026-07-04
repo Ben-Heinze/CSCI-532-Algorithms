@@ -1,0 +1,11 @@
+#+TITLE: Prim's Algorithm
+#+OPTIONS: toc:nil num:nil
+
+*Prim's Algorithm.* Mark an arbitrary node as connected. Then repeatedly
+pick the smallest-weight edge between a connected node and an
+unconnected node; mark both endpoints as connected. Continue until every
+vertex is connected.
+
+The [[cut-property][MST Cut Property]] proves optimality directly: at every step, the
+cut being considered separates the connected component from the rest of
+the graph, and Prim always picks the cheapest crossing edge.
